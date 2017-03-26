@@ -12,10 +12,10 @@ int main(int argc, char **argv) {
 	try {
 		start(map,purchasesFile);
 	}
-	catch (inexistentFile &s) {
-		cout << "ERROR: File \"" << s.getInexistentFileName() << "\" not found! Exiting..." << endl;
+	catch (InexistentFile &s) {
+		cout << "ERROR: File \"" << s.getFilename() << "\" not found! Exiting..." << endl;
 		pressToContinue();
-		return 1;
+		return -1;
 	}
 
 	SuperMarketNetwork smn (map,purchasesFile);

@@ -14,29 +14,29 @@ void start(string &map, string &purchasesFile) {
 	ifstream connectionsTestFile;
 	connectionsTestFile.open(connectionsFile);
 	if (!connectionsTestFile.is_open()) //If opening fails, then filename is not valid
-		throw inexistentFile(connectionsFile);
+		throw InexistentFile(connectionsFile);
 
 	ifstream edgesTestFile;
 	edgesTestFile.open(edgesFile);
 	if (!edgesTestFile.is_open())
-		throw inexistentFile(edgesFile);
+		throw InexistentFile(edgesFile);
 
 	ifstream nodesTestFile;
 	nodesTestFile.open(nodesFile);
 	if (!nodesTestFile.is_open())
-		throw inexistentFile(nodesFile);
+		throw InexistentFile(nodesFile);
 
 	ifstream poiTestFile;
 	poiTestFile.open(poiFile);
 	if (!poiTestFile.is_open())
-		throw inexistentFile(poiFile);
+		throw InexistentFile(poiFile);
 
 	cout << "Insert the purchase's file name: " << endl;
 	getline(cin, purchasesFile);
 	ifstream purchasesTestFile;
 	purchasesTestFile.open(purchasesFile);
 	if (!purchasesTestFile.is_open())
-		throw inexistentFile(purchasesFile);
+		throw InexistentFile(purchasesFile);
 
 	//No failure in opening = good to go. Close temporary files to avoid unwanted trouble
 	connectionsTestFile.close();

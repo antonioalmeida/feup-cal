@@ -79,7 +79,7 @@ struct vertex_greater_than {
 
 template <class T>
 bool Vertex<T>::removeEdgeTo(Vertex<T> *d) {
-	d->indegree--; //adicionado do exercicio 5
+	d->indegree--;
 	typename vector<Edge<T> >::iterator it= adj.begin();
 	typename vector<Edge<T> >::iterator ite= adj.end();
 	while (it!=ite) {
@@ -92,7 +92,6 @@ bool Vertex<T>::removeEdgeTo(Vertex<T> *d) {
 	return false;
 }
 
-//atualizado pelo exerc�cio 5
 template <class T>
 Vertex<T>::Vertex(T in, double longitude, double latitude): info(in), visited(false), processing(false), indegree(0), dist(0) , longitude(longitude),latitude(latitude){
 	path = NULL;
@@ -106,7 +105,7 @@ void Vertex<T>::addEdge(Vertex<T> *dest, double w, bool tw, bool blocked, T id, 
 	adj.push_back(edgeD);
 }
 
-//--
+
 template <class T>
 T Vertex<T>::getInfo() const {
 	return this->info;

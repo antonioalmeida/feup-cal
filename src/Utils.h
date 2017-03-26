@@ -3,17 +3,11 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
-#include <climits>
-#include <float.h>
+#include "Graph.h"
 
 #define WINDOW_SIZE 24
 #define TAB_BIG "                        "
 #define TAB	"     "
-
-/*! \file utils.h
- \brief Useful functions to use throughout the program.
-
- */
 
 class Link{
 public:
@@ -24,9 +18,7 @@ public:
 	}
 };
 
-/**
- * LimitCoords will store the highest and lowest longitude and latitude of the nodes
- */
+/* What the fuck is this for */
 struct LimitCoords
 {
 	double maxLat;
@@ -35,17 +27,10 @@ struct LimitCoords
 	double minLong;
 };
 
-/**
- * Stores in a LimitCoords struct the max coordinate values of map graph g
- */
 LimitCoords getLimitCoords(Graph<unsigned> g);
+
 int resizeLat(double lat, LimitCoords l, float windowH);
 int resizeLong(double lon, LimitCoords l, float windowW);
-
-
-
-
-
 
 
 //! Ensures user's input is a number between two numbers given by arguments
@@ -55,15 +40,6 @@ int resizeLong(double lon, LimitCoords l, float windowW);
 \return unsigned short int corresponding to the (valid) value read
  */
 unsigned short int readOp(unsigned short int minValue, unsigned short int  maxValue);
-
-//! Checks if date is valid
-/*!
-\param day unsigned int corresponding to the day of the date being tested
-\param month unsigned int corresponding to the month of the date being tested
-\param year unsigned int corresponding to the year of the date being tested
-\return true if date is OK according to Gregorian calendar standard, false otherwise
- */
-bool validDate(unsigned int day, unsigned int month, unsigned int year);
 
 //! Prints a number of new line characters defined by macro WINDOW_SIZE to simulate system("cls")
 /*!
@@ -81,22 +57,14 @@ void deleteWhitespace(std::string &s);
  */
 void pressToContinue();
 
-//! Prints table header used when doing different types of units listings
-/*!
- */
-void unitsPrintHeader();
-
-//! Prints table header used when doing different types of students listings
-/*!
- */
-void studentsPrintHeader();
-
-//! Prints table header used when doing different types of teachers listings
-/*!
- */
-void teachersPrintHeader();
-
-//! Prints table header used when listing the top 3 studentsClasses in the respective priority queue
-/*!
- */
-void classesPrintHeader();
+class InexistentFile {
+protected:
+	std::string filename;
+public:
+	InexistentFile(std::string fileNotFound) {
+		filename = fileNotFound;
+	}
+	std::string getFilename() const {
+		return filename;
+	}
+};
