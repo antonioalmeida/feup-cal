@@ -6,80 +6,53 @@
 
 #include <vector>
 #include <queue>
-#include <list>
-#include <limits.h>
+#include <limits>
 #include <cmath>
 #include <stddef.h>
-#include <map>
-#include "iostream"
+#include <iostream>
+#include "InfoVertex.h"
 
-#include "Utils.h"
-#include "graphviewer.h"
-
-//using namespace std;
+using namespace std;
 
 template <class T> class Edge;
 template <class T> class Graph;
 
-const int NOT_VISITED = 0;
-const int BEING_VISITED = 1;
-const int DONE_VISITED = 2;
-const int INT_INFINITY = INT_MAX;
-
-/*
- * ================================================================================================
- * Class Vertex
- * ================================================================================================
- */
 template <class T>
 class Vertex {
+private:
 	T info;
-	string name; // NULL, unless vertex represents a point of interest
 	vector<Edge<T>  > adj;
 	bool visited;
 	bool processing;
-	int indegree;
-	double dist;
-	double longitude;
-	double latitude;
-public:
-
-	Vertex(T in, double longitude, double latitude);
-	friend class Graph<T>;
-
-	void addEdge(Vertex<T> *dest, double w, bool tw, bool blocked, T id, string name);
+	void addEdge(Vertex<T> *dest, double w);
 	bool removeEdgeTo(Vertex<T> *d);
-
-	T getInfo() const;
-	void setInfo(T info);
-
-	string getName() const;
-	void setName(string name);
-
-	int getDist() const;
+	int indegree;
+	int dist;
+	Vertex<T>* path;
+	InfoVertex infoV;
+public:
 	int getIndegree() const;
-
-	double getLongitude() const;
-	double getLatitude() const;
-	vector<Edge<T>  > getAdj() const;
-
-	bool operator<(const Vertex<T> vertex);
-
-	Vertex* path;
+	vector<Edge<T> > getAdj(){return adj;};
+	T getInfo() const;
+	InfoVertex* getInfoV();
+	void setInfoV(InfoVertex infoV);
+	void incIndegree();
+	void decIndegree();
+	Vertex(T in);
+	friend class Graph<T>;
 };
-
 
 template <class T>
-struct vertex_greater_than {
-	bool operator()(Vertex<T> * a, Vertex<T> * b) const {
-		return a->getDist() > b->getDist();
-	}
-};
-
+InfoVertex* Vertex<T>::getInfoV(){
+	return &infoV;
+}
+template <class T>
+void Vertex<T>::setInfoV(InfoVertex infoV){
+	this->infoV=infoV;
+}
 
 template <class T>
 bool Vertex<T>::removeEdgeTo(Vertex<T> *d) {
-	d->indegree--;
 	typename vector<Edge<T> >::iterator it= adj.begin();
 	typename vector<Edge<T> >::iterator ite= adj.end();
 	while (it!=ite) {
@@ -93,187 +66,90 @@ bool Vertex<T>::removeEdgeTo(Vertex<T> *d) {
 }
 
 template <class T>
-Vertex<T>::Vertex(T in, double longitude, double latitude): info(in), visited(false), processing(false), indegree(0), dist(0) , longitude(longitude),latitude(latitude){
-	path = NULL;
-	name = "";
-}
+Vertex<T>::Vertex(T in): info(in), visited(false), indegree(0), processing(false), dist(0), path(0){}
 
 
 template <class T>
-void Vertex<T>::addEdge(Vertex<T> *dest, double w, bool tw, bool blocked, T id, string name) {
-	Edge<T> edgeD(dest,w, tw, blocked, id, name);
+void Vertex<T>::addEdge(Vertex<T> *dest, double w) {
+	Edge<T> edgeD(dest,w);
 	adj.push_back(edgeD);
 }
 
-
 template <class T>
-T Vertex<T>::getInfo() const {
-	return this->info;
+int Vertex<T>::getIndegree() const{
+	return indegree;
 }
 
 template <class T>
-int Vertex<T>::getDist() const {
-	return this->dist;
-}
-
-
-template <class T>
-void Vertex<T>::setInfo(T info) {
-	this->info = info;
+void Vertex<T>::incIndegree(){
+	indegree++;
 }
 
 template <class T>
-void Vertex<T>::setName(string name)
-{
-	this->name = name;
+void Vertex<T>::decIndegree(){
+	indegree--;
 }
 
 template <class T>
-string Vertex<T>::getName() const
-{
-	return this->name;
+T Vertex<T>::getInfo() const{
+	return info;
 }
 
-template <class T>
-int Vertex<T>::getIndegree() const {
-	return this->indegree;
-}
-
-template <class T>
-double Vertex<T>::getLongitude() const{
-	return this->longitude;
-}
-
-template <class T>
-double Vertex<T>::getLatitude() const{
-	return this->latitude;
-}
-
-template <class T>
-vector<Edge<T>  > Vertex<T>::getAdj() const{
-	return this->adj;
-}
-
-
-
-/* ================================================================================================
- * Class Edge
- * ================================================================================================
- */
 template <class T>
 class Edge {
 	Vertex<T> * dest;
 	double weight;
-	bool twoWays;
-	T id;
-	string name;
-	bool blocked;
 public:
-	Edge(Vertex<T> *d, double w, bool tw, bool block, T id, string name);
-	bool getTwoWays() const;
-	T getId() const;
-	int getWeight() const;
-	string getName() const;
+	Edge(Vertex<T> *d, double w);
+	Vertex<T> * getDest() {return dest;};
 	friend class Graph<T>;
 	friend class Vertex<T>;
-	Vertex<T> * getDest() const;
-	bool getBlocked() const;
 };
 
 template <class T>
-Edge<T>::Edge(Vertex<T> *d, double w, bool tw, bool block, T id, string n): dest(d), weight(w), twoWays(tw), id(id), name(n), blocked(block){}
+Edge<T>::Edge(Vertex<T> *d, double w): dest(d), weight(w){}
 
-template <class T>
-bool Edge<T>::getTwoWays() const{
-	return this->twoWays;
-}
-
-template <class T>
-T Edge<T>::getId() const{
-	return this->id;
-}
-
-template <class T>
-int Edge<T>::getWeight() const
-{
-	return this->weight;
-}
-
-template <class T>
-string Edge<T>::getName() const{
-	return this->name;
-}
-
-template <class T>
-Vertex<T> * Edge<T>::getDest() const{
-	return this->dest;
-}
-
-template <class T>
-bool Edge<T>::getBlocked() const{
-	return this->blocked;
-}
-
-/* ================================================================================================
- * Class Graph
- * ================================================================================================
- */
 template <class T>
 class Graph {
 	vector<Vertex<T> *> vertexSet;
 	void dfs(Vertex<T> *v, vector<T> &res) const;
-
-	//exercicio 5
-	int numCycles;
-	void dfsVisit(Vertex<T> *v);
-	void dfsVisit();
-	void getPathTo(Vertex<T> *origin, list<T> &res);
-
-	//exercicio 6
-	int ** W;   //weight
-	int ** P;   //path
-
+	void dfs_aux(Vertex<T> *v, vector<T> &res) const;
 public:
-	bool addVertex(const T &in, double longitude, double latitude);
-	bool addEdge(const T &sourc, const T &dest, double w, bool tw, bool blocked, T id, string name);
+	bool addVertex(const T &in);
+	bool addEdge(const T &sourc, const T &dest, double w);
 	bool removeVertex(const T &in);
 	bool removeEdge(const T &sourc, const T &dest);
 	vector<T> dfs() const;
+	vector<T> dfs_aux() const; //Used for isDAG
 	vector<T> bfs(Vertex<T> *v) const;
 	int maxNewChildren(Vertex<T> *v, T &inf) const;
 	vector<Vertex<T> * > getVertexSet() const;
 	int getNumVertex() const;
-	int getVertexIndex(const T &v) const;
-
-	int calculateEdgeWeight(T id1, T id2) const;
-
-	//exercicio 5
-	Vertex<T>* getVertex(const T &v) const;
-	Edge<T>* getEdge(const T &v) const;
-	void resetIndegrees();
 	vector<Vertex<T>*> getSources() const;
-	int getNumCycles();
-	vector<T> topologicalOrder();
-	vector<T> getPath(const T &origin, const T &dest);
-	void unweightedShortestPath(const T &v);
+	void resetIndegrees();
 	bool isDAG();
-
-	//exercicio 6
-	void bellmanFordShortestPath(const T &s);
-	void dijkstraShortestPath(const T &s);
-	void floydWarshallShortestPath();
-	int edgeCost(int vOrigIndex, int vDestIndex);
-	vector<T> getfloydWarshallPath(const T &origin, const T &dest);
-	void getfloydWarshallPathAux(int index1, int index2, vector<T> & res);
-
-	int getNumEdge() const;
-	void clearGraph();
-	void setEdgeBlocked(const T &v, bool b);
-
-	bool searchForDuplicate(map<string, int> roadInfo, string roadName) const;
-	map<string, int> getEdgesNames() const;
+	vector<T> topologicalOrder();
+	void unweightedShortestPath(const T &v);
+	void shortestPathUnweighted(const T &s);
+	Vertex<T>* getVertex(const T &v);
+	int getIndex(Vertex<T> *v);
 };
 
+class CycleException{};
+
+template <class T>
+int Graph<T>::getIndex(Vertex<T> *v){
+	for(unsigned int i = 0; i < vertexSet.size(); i++)
+			if (vertexSet[i] == v) return i;
+		return -1;
+}
+
+template <class T>
+Vertex<T>* Graph<T>::getVertex(const T &v){
+	for(unsigned int i = 0; i < vertexSet.size(); i++)
+		if (vertexSet[i]->info == v) return vertexSet[i];
+	return NULL;
+}
 
 template <class T>
 int Graph<T>::getNumVertex() const {
@@ -284,35 +160,13 @@ vector<Vertex<T> * > Graph<T>::getVertexSet() const {
 	return vertexSet;
 }
 
-template<class T>
-void Graph<T>::setEdgeBlocked(const T &v, bool b) {
-	for (unsigned int i = 0; i < vertexSet.size(); i++) {
-		for (unsigned int j = 0; j < vertexSet[i]->adj.size(); j++) {
-			if (vertexSet[i]->adj[j].id == v)
-				vertexSet[i]->adj[j].blocked = b;
-		}
-	}
-}
-
 template <class T>
-int Graph<T>::getNumCycles() {
-	numCycles = 0;
-	dfsVisit();
-	return this->numCycles;
-}
-
-template <class T>
-bool Graph<T>::isDAG() {
-	return (getNumCycles() == 0);
-}
-
-template <class T>
-bool Graph<T>::addVertex(const T &in, double longitude, double latitude) {
+bool Graph<T>::addVertex(const T &in) {
 	typename vector<Vertex<T>*>::iterator it= vertexSet.begin();
 	typename vector<Vertex<T>*>::iterator ite= vertexSet.end();
 	for (; it!=ite; it++)
 		if ((*it)->info == in) return false;
-	Vertex<T> *v1 = new Vertex<T>(in, longitude, latitude);
+	Vertex<T> *v1 = new Vertex<T>(in);
 	vertexSet.push_back(v1);
 	return true;
 }
@@ -325,16 +179,12 @@ bool Graph<T>::removeVertex(const T &in) {
 		if ((*it)->info == in) {
 			Vertex<T> * v= *it;
 			vertexSet.erase(it);
+			for(Edge<T> adjacent : v->adj)
+				adjacent.dest->decIndegree();
 			typename vector<Vertex<T>*>::iterator it1= vertexSet.begin();
 			typename vector<Vertex<T>*>::iterator it1e= vertexSet.end();
 			for (; it1!=it1e; it1++) {
 				(*it1)->removeEdgeTo(v);
-			}
-
-			typename vector<Edge<T> >::iterator itAdj= v->adj.begin();
-			typename vector<Edge<T> >::iterator itAdje= v->adj.end();
-			for (; itAdj!=itAdje; itAdj++) {
-				itAdj->dest->indegree--;
 			}
 			delete v;
 			return true;
@@ -344,22 +194,21 @@ bool Graph<T>::removeVertex(const T &in) {
 }
 
 template <class T>
-bool Graph<T>::addEdge(const T &sourc, const T &dest, double w, bool tw, bool blocked, T id, string name) {
+bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 	typename vector<Vertex<T>*>::iterator it= vertexSet.begin();
 	typename vector<Vertex<T>*>::iterator ite= vertexSet.end();
 	int found=0;
 	Vertex<T> *vS, *vD;
 	while (found!=2 && it!=ite ) {
 		if ( (*it)->info == sourc )
-		{ vS=*it; found++;}
+			{ vS=*it; found++;}
 		if ( (*it)->info == dest )
-		{ vD=*it; found++;}
+			{ vD=*it; found++;}
 		it ++;
 	}
 	if (found!=2) return false;
-	vD->indegree++;
-	vS->addEdge(vD,w, tw, blocked, id, name);
-
+	vS->addEdge(vD,w);
+	vD->incIndegree();
 	return true;
 }
 
@@ -371,17 +220,18 @@ bool Graph<T>::removeEdge(const T &sourc, const T &dest) {
 	Vertex<T> *vS, *vD;
 	while (found!=2 && it!=ite ) {
 		if ( (*it)->info == sourc )
-		{ vS=*it; found++;}
+			{ vS=*it; found++;}
 		if ( (*it)->info == dest )
-		{ vD=*it; found++;}
+			{ vD=*it; found++;}
 		it ++;
 	}
-	if (found!=2)
+	if (found!=2) return false;
+	if(vS->removeEdgeTo(vD)){
+		vD->decIndegree();
+		return true;
+	}
+	else
 		return false;
-
-	vD->indegree--;
-
-	return vS->removeEdgeTo(vD);
 }
 
 
@@ -396,8 +246,8 @@ vector<T> Graph<T>::dfs() const {
 	vector<T> res;
 	it=vertexSet.begin();
 	for (; it !=ite; it++)
-		if ( (*it)->visited==false )
-			dfs(*it,res);
+	    if ( (*it)->visited==false )
+	    	dfs(*it,res);
 	return res;
 }
 
@@ -408,18 +258,43 @@ void Graph<T>::dfs(Vertex<T> *v,vector<T> &res) const {
 	typename vector<Edge<T> >::iterator it= (v->adj).begin();
 	typename vector<Edge<T> >::iterator ite= (v->adj).end();
 	for (; it !=ite; it++)
-		if ( it->dest->visited == false && it->blocked == false){
-			//cout << "ok ";
-			dfs(it->dest, res);
-		}
+	    if ( it->dest->visited == false )
+	    	dfs(it->dest, res);
 }
 
-template<class T>
+template <class T>
+vector<T> Graph<T>::dfs_aux() const {
+	typename vector<Vertex<T>*>::const_iterator it= vertexSet.begin();
+	typename vector<Vertex<T>*>::const_iterator ite= vertexSet.end();
+	for (; it !=ite; it++)
+		(*it)->visited=false;
+	vector<T> res;
+	it=vertexSet.begin();
+	for (; it !=ite; it++)
+	    if ( (*it)->visited==false )
+	    	dfs_aux(*it,res);
+	return res;
+}
+
+template <class T>
+void Graph<T>::dfs_aux(Vertex<T> *v,vector<T> &res) const {
+	v->processing = true;
+	v->visited = true;
+	res.push_back(v->info);
+	typename vector<Edge<T> >::iterator it= (v->adj).begin();
+	typename vector<Edge<T> >::iterator ite= (v->adj).end();
+	for (; it !=ite; it++){
+	    if ( it->dest->visited == false )
+	    	dfs_aux(it->dest, res);
+
+	    if( it->dest->processing == true)
+			throw CycleException();
+	}
+	v->processing = false;
+}
+
+template <class T>
 vector<T> Graph<T>::bfs(Vertex<T> *v) const {
-	typename vector<Vertex<T>*>::const_iterator it = vertexSet.begin();
-	typename vector<Vertex<T>*>::const_iterator ite = vertexSet.end();
-	for (; it != ite; it++)
-		(*it)->visited = false;
 	vector<T> res;
 	queue<Vertex<T> *> q;
 	q.push(v);
@@ -432,7 +307,7 @@ vector<T> Graph<T>::bfs(Vertex<T> *v) const {
 		typename vector<Edge<T> >::iterator ite=v1->adj.end();
 		for (; it!=ite; it++) {
 			Vertex<T> *d = it->dest;
-			if (d->visited==false && it->blocked == false) {
+			if (d->visited==false) {
 				d->visited=true;
 				q.push(d);
 			}
@@ -478,457 +353,95 @@ int Graph<T>::maxNewChildren(Vertex<T> *v, T &inf) const {
 }
 
 template <class T>
-int Graph<T>::getVertexIndex(const T &v) const{
-	for (int i = 0; i < this->vertexSet.size(); i++)
-		if(this->vertexSet[i]->info == v)
-			return i;
+vector<Vertex<T>*> Graph<T>::getSources() const{
+	vector<Vertex<T>*> result;
+	for(Vertex<T>* ver : vertexSet){
+		if(ver->getIndegree() == 0)
+			result.push_back(ver);
+	}
 
-	return -1;
+	return result;
 }
 
-/**
- * Calculates an edge weight according to the distance that separates its nodes. The applied
- * formula is the distance between the two points times 1000, so it has a significant amount of weight.
- *
- * @param T id1	Content of node 1.
- * @param T id2	Content of node 2.
- */
-template<class T>
-int Graph<T>::calculateEdgeWeight(T id1, T id2) const
-{
-	Vertex<T> *v1 = getVertex(id1);
-	Vertex<T> *v2 = getVertex(id2);
-
-	double lon1, lon2, lat1, lat2;
-
-	lon1 = v1->getLongitude();
-	lat1 = v1->getLatitude();
-	lon2 = v2->getLongitude();
-	lat2 = v2->getLatitude();
-
-	double dist = sqrt(pow((lon1 - lon2), 2) + pow((lat1 - lat2), 2));
-
-	dist = dist * 100000; // to return an int
-
-	return floor(dist);
-}
-
-
-
+/*
 template <class T>
-Vertex<T>* Graph<T>::getVertex(const T &v) const {
-	for(unsigned int i = 0; i < vertexSet.size(); i++)
-		if (vertexSet[i]->info == v) return vertexSet[i];
-	return NULL;
-}
-
-template<class T>
-void Graph<T>::resetIndegrees() {
-	//colocar todos os indegree em 0;
-	for(unsigned int i = 0; i < vertexSet.size(); i++) vertexSet[i]->indegree = 0;
-
-	//actualizar os indegree
-	for(unsigned int i = 0; i < vertexSet.size(); i++) {
-		//percorrer o vector de Edges, e actualizar indegree
-		for(unsigned int j = 0; j < vertexSet[i]->adj.size(); j++) {
-			vertexSet[i]->adj[j].dest->indegree++;
-		}
+void Graph<T>::resetIndegrees(){
+	typename vector<Vertex<T>*>::iterator it = vertexSet.begin();
+	typename vector<Vertex<T>*>::iterator ite = vertexSet.end();
+	for(;it != ite; it++)
+		(*it)->indegree = 0;
+	for(it = vertexSet.begin(); it != ite; it++){
+		typename vector<Edge<T>>::iterator ita = (*it)->adj.begin();
+		typename vector<Edge<T>>::iterator itae = (*it)->adj.end();
+		for(; ita != itae; ita++)
+			ita->dest->incIndegree();
 	}
 }
+*/
 
-
-template<class T>
-vector<Vertex<T>*> Graph<T>::getSources() const {
-	vector< Vertex<T>* > buffer;
-	for(unsigned int i = 0; i < vertexSet.size(); i++) {
-		if( vertexSet[i]->indegree == 0 ) buffer.push_back( vertexSet[i] );
+template <class T>
+bool Graph<T>::isDAG(){
+	try{
+		dfs_aux();
+		return true;
 	}
-	return buffer;
-}
-
-template <class T>
-int Graph<T>::getNumEdge() const
-{
-	int counter = 0;
-
-	for(unsigned int i = 0; i < vertexSet.size(); i++)
-		counter += vertexSet[i]->adj.size();
-
-	return counter;
-}
-
-template <class T>
-bool Graph<T>::searchForDuplicate(map<string, int> roadInfo, string roadName) const {
-	map<string, int>::iterator it;
-
-	it = roadInfo.find(roadName);
-	if(it == roadInfo.end())
+	catch(CycleException &e){
 		return false;
-
-	return true;
+	}
 }
 
 template <class T>
-map<string, int> Graph<T>::getEdgesNames() const {
-	map<string, int> roadInfo;
-
-	for(int i = 0; i < vertexSet.size(); i++) {
-		vector<Edge<T> > adj = vertexSet[i]->getAdj();
-		for(int j = 0; j < adj.size(); j++) {
-			if(adj[j].getName() != "" && !searchForDuplicate(roadInfo, adj[j].getName())) {
-				roadInfo[adj[j].getName()] = getVertexIndex(adj[j].getDest()->getInfo());
+vector<T> Graph<T>::topologicalOrder(){
+	vector<T> result;
+	if(isDAG()){
+		vector<Vertex<T>*> sources = getSources();
+		queue<Vertex<T>*> order;
+		for(Vertex<T>* sour : sources)
+			order.push(sour);
+		while(!order.empty()){
+			Vertex<T>* current = order.front();
+			for(Edge<T> adjacent : current->adj){
+				if(--(adjacent.dest->indegree) == 0)
+					order.push(adjacent.dest);
 			}
+			result.push_back(current->info);
+			order.pop();
 		}
 	}
-
-	return roadInfo;
-}
-
-
-template <class T>
-void Graph<T>::dfsVisit() {
-	typename vector<Vertex<T>*>::const_iterator it= vertexSet.begin();
-	typename vector<Vertex<T>*>::const_iterator ite= vertexSet.end();
-	for (; it !=ite; it++)
-		(*it)->visited=false;
-	it=vertexSet.begin();
-	for (; it !=ite; it++)
-		if ( (*it)->visited==false )
-			dfsVisit(*it);
+	resetIndegrees();
+	return result;
 }
 
 template <class T>
-void Graph<T>::dfsVisit(Vertex<T> *v) {
-	v->processing = true;
-	v->visited = true;
-	typename vector<Edge<T> >::iterator it= (v->adj).begin();
-	typename vector<Edge<T> >::iterator ite= (v->adj).end();
-	for (; it !=ite; it++) {
-		if ( it->dest->processing == true) numCycles++;
-		if ( it->dest->visited == false ){
-			dfsVisit(it->dest);
-		}
-	}
-	v->processing = false;
-}
-
-template<class T>
-vector<T> Graph<T>::topologicalOrder() {
-	//vetor com o resultado da ordenacao
-	vector<T> res;
-
-	//verificar se ï¿½ um DAG
-	if( getNumCycles() > 0 ) {
-		cout << "Ordenacao Impossivel!" << endl;
-		return res;
-	}
-
-	//garantir que os "indegree" estao inicializados corretamente
-	this->resetIndegrees();
-
-	queue<Vertex<T>*> q;
-
-	vector<Vertex<T>*> sources = getSources();
-	while( !sources.empty() ) {
-		q.push( sources.back() );
-		sources.pop_back();
-	}
-
-
-	//processar fontes
-	while( !q.empty() ) {
-		Vertex<T>* v = q.front();
-		q.pop();
-
-		res.push_back(v->info);
-
-		for(unsigned int i = 0; i < v->adj.size(); i++) {
-			v->adj[i].dest->indegree--;
-			if( v->adj[i].dest->indegree == 0) q.push( v->adj[i].dest );
-		}
-	}
-
-	//testar se o procedimento foi bem sucedido
-	if ( res.size() != vertexSet.size() ) {
-		while( !res.empty() ) res.pop_back();
-	}
-
-	//garantir que os "indegree" ficam atualizados ao final
-	this->resetIndegrees();
-
-	return res;
-}
-
-
-
-template<class T>
-vector<T> Graph<T>::getPath(const T &origin, const T &dest){
-
-	list<T> buffer;
-	Vertex<T>* v = getVertex(dest);
-
-	buffer.push_front(v->info);
-	while ( v->path != NULL &&  v->path->info != origin) {
-		v = v->path;
-		buffer.push_front(v->info);
-	}
-	if( v->path != NULL )
-		buffer.push_front(v->path->info);
-
-
-	vector<T> res;
-	while( !buffer.empty() ) {
-		res.push_back( buffer.front() );
-		buffer.pop_front();
-	}
-	return res;
-}
-
-template<class T>
-vector<T> Graph<T>::getfloydWarshallPath(const T &origin, const T &dest){
-
-	int originIndex = -1, destinationIndex = -1;
-
-	for(unsigned int i = 0; i < vertexSet.size(); i++)
-	{
-		if(vertexSet[i]->info == origin)
-			originIndex = i;
-		if(vertexSet[i]->info == dest)
-			destinationIndex = i;
-
-		if(originIndex != -1 && destinationIndex != -1)
+void Graph<T>::shortestPathUnweighted(const T &s) {
+	Vertex<T>* source = 0;
+	for(Vertex<T>* v : vertexSet){
+		if(v->info == s){
+			source = v;
 			break;
+		}
+	}
+	if(source == NULL) return;
+	for (Vertex<T>* v : vertexSet) {
+		v->path = 0;
+		v->dist = INFINITY;
 	}
 
-
-	vector<T> res;
-
-	//se nao foi encontrada solucao possivel, retorna lista vazia
-	if(W[originIndex][destinationIndex] == INT_INFINITY)
-		return res;
-
-	res.push_back(vertexSet[originIndex]->info);
-
-	//se houver pontos intermedios...
-	if(P[originIndex][destinationIndex] != -1)
-	{
-		int intermedIndex = P[originIndex][destinationIndex];
-
-		getfloydWarshallPathAux(originIndex, intermedIndex, res);
-
-		res.push_back(vertexSet[intermedIndex]->info);
-
-		getfloydWarshallPathAux(intermedIndex,destinationIndex, res);
-	}
-
-	res.push_back(vertexSet[destinationIndex]->info);
-
-
-	return res;
-}
-
-
-
-template<class T>
-void Graph<T>::getfloydWarshallPathAux(int index1, int index2, vector<T> & res)
-{
-	if(P[index1][index2] != -1)
-	{
-		getfloydWarshallPathAux(index1, P[index1][index2], res);
-
-		res.push_back(vertexSet[P[index1][index2]]->info);
-
-		getfloydWarshallPathAux(P[index1][index2],index2, res);
-	}
-}
-
-
-template<class T>
-void Graph<T>::unweightedShortestPath(const T &s) {
-
-	for(unsigned int i = 0; i < vertexSet.size(); i++) {
-		vertexSet[i]->path = NULL;
-		vertexSet[i]->dist = INT_INFINITY;
-	}
-
-	Vertex<T>* v = getVertex(s);
-	v->dist = 0;
-	queue< Vertex<T>* > q;
-	q.push(v);
-
-	while( !q.empty() ) {
-		v = q.front(); q.pop();
-		for(unsigned int i = 0; i < v->adj.size(); i++) {
-			Vertex<T>* w = v->adj[i].dest;
-			if( w->dist == INT_INFINITY && !v->adj[i].blocked) {
-				w->dist = v->dist + 1;
-				w->path = v;
-				q.push(w);
+	source->dist = 0;
+	queue<Vertex<T>*> q;
+	q.push(source); // na cauda
+	while(!q.isEmpty()){
+		Vertex<T>* current = q.front(); // da cabeça
+		for (Edge<T> e : current->adj) {
+			Vertex<T>* w = e.dest;
+			if (w->dist == INFINITY) {
+				w->dist = current->dist + 1;
+				w->path = current;
+				q.add(w);
 			}
 		}
+		q.pop();
 	}
-}
-
-
-template<class T>
-void Graph<T>::bellmanFordShortestPath(const T &s) {
-
-	for(unsigned int i = 0; i < vertexSet.size(); i++) {
-		vertexSet[i]->path = NULL;
-		vertexSet[i]->dist = INT_INFINITY;
-	}
-
-	Vertex<T>* v = getVertex(s);
-	v->dist = 0;
-	queue< Vertex<T>* > q;
-	q.push(v);
-
-	while( !q.empty() ) {
-		v = q.front(); q.pop();
-		for(unsigned int i = 0; i < v->adj.size(); i++) {
-			Vertex<T>* w = v->adj[i].dest;
-			if(v->dist + v->adj[i].weight < w->dist && !v->adj[i].blocked) {
-				w->dist = v->dist + v->adj[i].weight;
-				w->path = v;
-				q.push(w);
-			}
-		}
-	}
-}
-
-
-
-
-
-template<class T>
-void Graph<T>::dijkstraShortestPath(const T &s) {
-
-	for(unsigned int i = 0; i < vertexSet.size(); i++) {
-		vertexSet[i]->path = NULL;
-		vertexSet[i]->dist = INT_INFINITY;
-		vertexSet[i]->processing = false;
-	}
-
-	Vertex<T>* v = getVertex(s);
-	v->dist = 0;
-
-	vector< Vertex<T>* > pq;
-	pq.push_back(v);
-
-	make_heap(pq.begin(), pq.end());
-
-
-	while( !pq.empty() ) {
-
-		v = pq.front();
-		pop_heap(pq.begin(), pq.end());
-		pq.pop_back();
-
-		for(unsigned int i = 0; i < v->adj.size(); i++) {
-			Vertex<T>* w = v->adj[i].dest;
-
-			if(v->dist + v->adj[i].weight < w->dist ) {
-
-				w->dist = v->dist + v->adj[i].weight;
-				w->path = v;
-
-				//se jï¿½ estiver na lista, apenas a actualiza
-				if(!w->processing)
-				{
-					w->processing = true;
-					pq.push_back(w);
-				}
-
-				make_heap (pq.begin(),pq.end(),vertex_greater_than<T>());
-			}
-		}
-	}
-}
-
-template<class T>
-int Graph<T>::edgeCost(int vOrigIndex, int vDestIndex)
-{
-	if(vertexSet[vOrigIndex] == vertexSet[vDestIndex])
-		return 0;
-
-	for(unsigned int i = 0; i < vertexSet[vOrigIndex]->adj.size(); i++)
-	{
-		if(vertexSet[vOrigIndex]->adj[i].dest == vertexSet[vDestIndex]){
-			if(vertexSet[vOrigIndex]->adj[i].blocked)
-				continue;
-			else return vertexSet[vOrigIndex]->adj[i].weight;
-		}
-	}
-
-	return INT_INFINITY;
-}
-
-template<class T>
-void printSquareArray(int ** arr, unsigned int size){
-	for(unsigned int k = 0; k < size; k++)
-	{
-		if(k == 0)
-		{
-			cout <<  "   ";
-			for(unsigned int i = 0; i < size; i++)
-				cout <<  " " << i+1 << " ";
-			cout << endl;
-		}
-
-		for(unsigned int i = 0; i < size; i++)
-		{
-			if(i == 0)
-				cout <<  " " << k+1 << " ";
-
-			if(arr[k][i] == INT_INFINITY)
-				cout << " - ";
-			else
-				cout <<  " " << arr[k][i] << " ";
-		}
-
-		cout << endl;
-	}
-}
-
-
-template<class T>
-void Graph<T>::floydWarshallShortestPath() {
-
-	W = new int * [vertexSet.size()];
-	P = new int * [vertexSet.size()];
-	for(unsigned int i = 0; i < vertexSet.size(); i++)
-	{
-		W[i] = new int[vertexSet.size()];
-		P[i] = new int[vertexSet.size()];
-		for(unsigned int j = 0; j < vertexSet.size(); j++)
-		{
-			W[i][j] = edgeCost(i,j);
-			P[i][j] = -1;
-		}
-	}
-
-
-	for(unsigned int k = 0; k < vertexSet.size(); k++)
-		for(unsigned int i = 0; i < vertexSet.size(); i++)
-			for(unsigned int j = 0; j < vertexSet.size(); j++)
-			{
-				//se somarmos qualquer coisa ao valor INT_INFINITY, ocorre overflow, o que resulta num valor negativo, logo nem convï¿½m considerar essa soma
-				if(W[i][k] == INT_INFINITY || W[k][j] == INT_INFINITY)
-					continue;
-
-				int val = min ( W[i][j], W[i][k]+W[k][j] );
-				if(val != W[i][j])
-				{
-					W[i][j] = val;
-					P[i][j] = k;
-				}
-			}
-
-}
-
-template<class T>
-void Graph<T>::clearGraph(){
-	vertexSet.clear();
 }
 
 

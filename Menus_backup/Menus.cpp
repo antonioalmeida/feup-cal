@@ -30,20 +30,20 @@ void start(string &map, string &purchasesFile) {
 	poiTestFile.open(poiFile);
 	if (!poiTestFile.is_open())
 		throw InexistentFile(poiFile);
-
+/*
 	cout << "Insert the purchase's file name: " << endl;
 	getline(cin, purchasesFile);
 	ifstream purchasesTestFile;
 	purchasesTestFile.open(purchasesFile);
 	if (!purchasesTestFile.is_open())
 		throw InexistentFile(purchasesFile);
-
+*/
 	//No failure in opening = good to go. Close temporary files to avoid unwanted trouble
 	connectionsTestFile.close();
 	edgesTestFile.close();
 	nodesTestFile.close();
 	poiTestFile.close();
-	purchasesTestFile.close();
+	//purchasesTestFile.close();
 }
 
 
@@ -211,11 +211,12 @@ void graphViewerOptions(SuperMarketNetwork & smn) {
 	while ((option = graphViewerMenu()))
 		switch (option) {
 		case 1:
-			smn.showGraph();
+			smn.graphInfoToGV();
+			//smn.showGraph();
 			pressToContinue();
 			break;
 		case 2:
-			smn.editGraph();
+			//smn.editGraph();
 			pressToContinue();
 			break;
 		}

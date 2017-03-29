@@ -1,6 +1,6 @@
 #include "graphviewer.h"
 #include <string>
-#include <sstream>
+#include<sstream>
 
 #ifdef linux
 pid_t GraphViewer::procId = NULL;
@@ -60,7 +60,7 @@ void GraphViewer::initialize(int width, int height, bool dynamic, int port_n) {
 			&si,            // Pointer to STARTUPINFO structure
 			&pi )           // Pointer to PROCESS_INFORMATION structure
 	) {
-		printf( "CreateProcess failed (%d).\n", (int) GetLastError() );
+		cerr << "CreateProcess failed " << GetLastError() << endl;
 		return;
 	}
 
@@ -94,6 +94,15 @@ bool GraphViewer::closeWindow() {
 }
 
 bool GraphViewer::addNode(int id) {
+	if(!isDynamic) {
+		cerr << "This graph is not dynamic,"
+				"so you must use GraphViewer::addNode(int id, int x, int y) instead.\n"
+				"The node " << id << " will be ignored" << endl;
+
+		return false;
+	}
+
+
 	char buff[200];
 	sprintf(buff, "addNode1 %d\n", id);
 	string str(buff);
@@ -101,6 +110,12 @@ bool GraphViewer::addNode(int id) {
 }
 
 bool GraphViewer::addNode(int id, int x, int y) {
+	if(isDynamic) {
+		cerr << "This graph is dynamic, "
+				"so the provided x and y values for the node with id "
+				<< id << " will be ignored" << endl;
+	}
+
 	char buff[200];
 	sprintf(buff, "addNode3 %d %d %d\n", id, x, y);
 	string str(buff);
@@ -156,6 +171,27 @@ bool GraphViewer::setEdgeColor(int k, string color) {
 	return con->sendMsg(str);
 }
 
+bool GraphViewer::defineEdgeDashed(bool dashed) {
+	char buff[200];
+	sprintf(buff, "defineEdgeDashed %s\n", dashed? "true" : "false");
+	string str(buff);
+	return con->sendMsg(str);
+}
+
+bool GraphViewer::setEdgeDashed(int k, bool dashed) {
+	char buff[200];
+	sprintf(buff, "setEdgeDashed %d %s\n", k, dashed? "true" : "false");
+	string str(buff);
+	return con->sendMsg(str);
+}
+
+bool GraphViewer::defineEdgeCurved(bool curved) {
+	char buff[200];
+	sprintf(buff, "defineEdgeCurved %s\n", curved? "true" : "false");
+	string str(buff);
+	return con->sendMsg(str);
+}
+
 bool GraphViewer::setEdgeThickness(int k, int thickness) {
 	char buff[200];
 	sprintf(buff, "setEdgeThickness %d %d\n", k, thickness);
@@ -173,6 +209,34 @@ bool GraphViewer::defineVertexColor(string color) {
 bool GraphViewer::setVertexColor(int k, string color) {
 	char buff[200];
 	sprintf(buff, "setVertexColor %d %s\n", k, color.c_str());
+	string str(buff);
+	return con->sendMsg(str);
+}
+
+bool GraphViewer::defineVertexIcon(string filepath) {
+	char buff[200];
+	sprintf(buff, "defineVertexIcon %s\n", filepath.c_str());
+	string str(buff);
+	return con->sendMsg(str);
+}
+
+bool GraphViewer::setVertexIcon(int k, string filepath) {
+	char buff[200];
+	sprintf(buff, "setVertexIcon %d %s\n", k, filepath.c_str());
+	string str(buff);
+	return con->sendMsg(str);
+}
+
+bool GraphViewer::defineVertexSize(int size) {
+	char buff[200];
+	sprintf(buff, "defineVertexSize %d\n", size);
+	string str(buff);
+	return con->sendMsg(str);
+}
+
+bool GraphViewer::setVertexSize(int k, int size) {
+	char buff[200];
+	sprintf(buff, "setVertexSize %d %d\n", k, size);
 	string str(buff);
 	return con->sendMsg(str);
 }

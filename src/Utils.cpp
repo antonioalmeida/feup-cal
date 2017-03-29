@@ -5,50 +5,6 @@
 using namespace std;
 
 
-/***UTILITY FUNCTIONS***/
-
-LimitCoords getLimitCoords(Graph<unsigned> g) {
-	LimitCoords l;
-
-	//Initializes minimum value with highest possible
-	double minLat = FLT_MAX;
-	double minLong = FLT_MAX;
-
-	double maxLat = -FLT_MAX;
-	double maxLong = -FLT_MAX;
-
-	vector<Vertex<unsigned> *> vertex = g.getVertexSet();
-	for (int i = 0; i < g.getNumVertex(); i++) {
-		if (vertex[i]->getLatitude() < minLat)
-			minLat = vertex[i]->getLatitude();
-
-		if (vertex[i]->getLongitude() < minLong)
-			minLong = vertex[i]->getLongitude();
-
-		if (vertex[i]->getLatitude() > maxLat)
-			maxLat = vertex[i]->getLatitude();
-
-		if (vertex[i]->getLongitude() > maxLong)
-			maxLong = vertex[i]->getLongitude();
-	}
-
-	l.maxLat = maxLat;
-	l.maxLong = maxLong;
-	l.minLat = minLat;
-	l.minLong = minLong;
-
-	return l;
-}
-
-int resizeLat(double lat, LimitCoords l, float windowH) {
-	return (windowH
-			- (round(windowH / (l.maxLat - l.minLat) * (lat - l.minLat))));
-}
-
-int resizeLong(double lon, LimitCoords l, float windowW) {
-	return (round(windowW / (l.maxLong - l.minLong) * (lon - l.minLong)));
-}
-
 
 void clearScreen() {
 	for (unsigned int i = 0; i < WINDOW_SIZE; i++)

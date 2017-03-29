@@ -5,32 +5,11 @@
 #include <iomanip>
 #include "Graph.h"
 
+using namespace std;
+
 #define WINDOW_SIZE 24
 #define TAB_BIG "                        "
 #define TAB	"     "
-
-class Link{
-public:
-	unsigned roadId, node1Id, node2Id;
-	Link() : roadId(0), node1Id(0), node2Id(0) {}
-	Link(unsigned r, unsigned n1, unsigned n2) :
-		roadId(r), node1Id(n1), node2Id(n2) {
-	}
-};
-
-/* What the fuck is this for */
-struct LimitCoords
-{
-	double maxLat;
-	double minLat;
-	double maxLong;
-	double minLong;
-};
-
-LimitCoords getLimitCoords(Graph<unsigned> g);
-
-int resizeLat(double lat, LimitCoords l, float windowH);
-int resizeLong(double lon, LimitCoords l, float windowW);
 
 
 //! Ensures user's input is a number between two numbers given by arguments

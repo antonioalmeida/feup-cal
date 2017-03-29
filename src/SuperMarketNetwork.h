@@ -15,10 +15,13 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <math.h>
 #include <map>
+#include "InfoVertex.h"
 #include "Graph.h"
 #include "graphviewer.h"
 #include "Utils.h"
+
 
 #define EDGE_THICKNESS 10
 #define DEFAULT_EDGE_THICKNESS 1
@@ -26,50 +29,50 @@
 #define GV_WINDOW_WIDTH 1600 	// graph viewer x resolution
 #define GV_WINDOW_HEIGHT 700	// gv y resolution
 
+/**
+ * LimitCoords will store the highest and lowest longitude and latitude of the nodes
+ */
+struct LimitCoords
+{
+	double maxLat;
+	double minLat;
+	double maxLong;
+	double minLong;
+};
+
+/**
+ * Stores in a LimitCoords struct the max coordinate values of map graph g
+ */
+LimitCoords getLimitCoords(Graph<long long int> g);
+int resizeLat(double lat, LimitCoords l, float windowH);
+int resizeLong(double lon, LimitCoords l, float windowW);
+
+double deg2rad(double deg);
+double getDistanceFromLatLonInKm(double lat1,double lon1,double lat2,double lon2);
+#endif /* SRC_SUPERMARKETNETWORK_H_ */
+
+
 class SuperMarketNetwork {
 private:
-	Graph<unsigned> graph;
-	GraphViewer * gv;
 	string map;
-	int sourceID;
-	int destinyID;
-	int POIsNavigationMethod;
-	vector<int> nodePath;
-	vector<int> edgePath;
-	vector<int> pointsOfInterest; //change to homes and supermarkets!!
+
+	Graph<long long int> graph;
+	GraphViewer * gv;
+
+	vector<long long int> superMarket;
+	vector<long long int> clients;
+
+	LimitCoords l;
+
 public:
-	SuperMarketNetwork(string name, string purchases);
+	SuperMarketNetwork();
 	virtual ~SuperMarketNetwork();
 
-	bool readFiles(string purchases);
+	bool readFiles();
 
-	string getMap() const;
-	void setMap(string m);
 	void updateMap();
 	void eraseMap();
 
-	int getsourceID() const;
-	int setsourceID(int id);
-	int getdestinyID() const;
-	int setdestinyID(int id);
-	vector<string> getPointsOfInterest() const;
-	int addPointOfInterest(int id);
-	int setPOIsNavigation(int method);
-	int removePointOfInterest(int id);
-	std::vector<int> sortPOIsByWeight(const std::vector<Vertex<unsigned> *> &g);
-
-	void getRoadNames(std::map<string, int> &roadsInfo);
-
 	void graphInfoToGV();
-	int highlightNode(int id, std::string color);
-	int highlightEdge(int id, std::string color, int thickness);
-	void highlightPath(unsigned nodeStartID, unsigned nodeDestinationID);
-	void HighLightShortestPath();
-
-	double getWeightOfPath(unsigned nodeStartID, unsigned nodeDestinationID);
-	void resetPath();
-	void setTollWeight(bool apply);
-
 };
 
-#endif /* SRC_SUPERMARKETNETWORK_H_ */
