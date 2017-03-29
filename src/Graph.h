@@ -140,8 +140,8 @@ class CycleException{};
 template <class T>
 int Graph<T>::getIndex(Vertex<T> *v){
 	for(unsigned int i = 0; i < vertexSet.size(); i++)
-			if (vertexSet[i] == v) return i;
-		return -1;
+		if (vertexSet[i] == v) return i;
+	return -1;
 }
 
 template <class T>
@@ -201,9 +201,9 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 	Vertex<T> *vS, *vD;
 	while (found!=2 && it!=ite ) {
 		if ( (*it)->info == sourc )
-			{ vS=*it; found++;}
+		{ vS=*it; found++;}
 		if ( (*it)->info == dest )
-			{ vD=*it; found++;}
+		{ vD=*it; found++;}
 		it ++;
 	}
 	if (found!=2) return false;
@@ -220,9 +220,9 @@ bool Graph<T>::removeEdge(const T &sourc, const T &dest) {
 	Vertex<T> *vS, *vD;
 	while (found!=2 && it!=ite ) {
 		if ( (*it)->info == sourc )
-			{ vS=*it; found++;}
+		{ vS=*it; found++;}
 		if ( (*it)->info == dest )
-			{ vD=*it; found++;}
+		{ vD=*it; found++;}
 		it ++;
 	}
 	if (found!=2) return false;
@@ -246,8 +246,8 @@ vector<T> Graph<T>::dfs() const {
 	vector<T> res;
 	it=vertexSet.begin();
 	for (; it !=ite; it++)
-	    if ( (*it)->visited==false )
-	    	dfs(*it,res);
+		if ( (*it)->visited==false )
+			dfs(*it,res);
 	return res;
 }
 
@@ -258,8 +258,8 @@ void Graph<T>::dfs(Vertex<T> *v,vector<T> &res) const {
 	typename vector<Edge<T> >::iterator it= (v->adj).begin();
 	typename vector<Edge<T> >::iterator ite= (v->adj).end();
 	for (; it !=ite; it++)
-	    if ( it->dest->visited == false )
-	    	dfs(it->dest, res);
+		if ( it->dest->visited == false )
+			dfs(it->dest, res);
 }
 
 template <class T>
@@ -271,8 +271,8 @@ vector<T> Graph<T>::dfs_aux() const {
 	vector<T> res;
 	it=vertexSet.begin();
 	for (; it !=ite; it++)
-	    if ( (*it)->visited==false )
-	    	dfs_aux(*it,res);
+		if ( (*it)->visited==false )
+			dfs_aux(*it,res);
 	return res;
 }
 
@@ -284,10 +284,10 @@ void Graph<T>::dfs_aux(Vertex<T> *v,vector<T> &res) const {
 	typename vector<Edge<T> >::iterator it= (v->adj).begin();
 	typename vector<Edge<T> >::iterator ite= (v->adj).end();
 	for (; it !=ite; it++){
-	    if ( it->dest->visited == false )
-	    	dfs_aux(it->dest, res);
+		if ( it->dest->visited == false )
+			dfs_aux(it->dest, res);
 
-	    if( it->dest->processing == true)
+		if( it->dest->processing == true)
 			throw CycleException();
 	}
 	v->processing = false;
@@ -377,7 +377,7 @@ void Graph<T>::resetIndegrees(){
 			ita->dest->incIndegree();
 	}
 }
-*/
+ */
 
 template <class T>
 bool Graph<T>::isDAG(){

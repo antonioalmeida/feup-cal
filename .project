@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>CAL-TEST</name>
+	<name>feup-cal</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -28,17 +28,17 @@
 		<link>
 			<name>.cproject</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Desktop/Cenas/.cproject</locationURI>
+			<location>D:/Documentos/Diogo/FEUP/2º Semestre/CAL/feup-cal/.cproject</location>
 		</link>
 		<link>
 			<name>.project</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Desktop/Cenas/.project</locationURI>
+			<location>D:/Documentos/Diogo/FEUP/2º Semestre/CAL/feup-cal/.project</location>
 		</link>
 		<link>
 			<name>src</name>
 			<type>2</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Desktop/Cenas/src</locationURI>
+			<location>D:/Documentos/Diogo/FEUP/2º Semestre/CAL/feup-cal/src</location>
 		</link>
 	</linkedResources>
 </projectDescription>
