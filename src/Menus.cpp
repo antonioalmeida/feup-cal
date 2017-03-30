@@ -12,22 +12,22 @@ void start(string &map, string &purchasesFile) {
 	string poiFile = map + "POI.txt";
 
 	ifstream connectionsTestFile;
-	connectionsTestFile.open(connectionsFile);
+	connectionsTestFile.open(connectionsFile.c_str());
 	if (!connectionsTestFile.is_open()) //If opening fails, then filename is not valid
 		throw InexistentFile(connectionsFile);
 
 	ifstream edgesTestFile;
-	edgesTestFile.open(edgesFile);
+	edgesTestFile.open(edgesFile.c_str());
 	if (!edgesTestFile.is_open())
 		throw InexistentFile(edgesFile);
 
 	ifstream nodesTestFile;
-	nodesTestFile.open(nodesFile);
+	nodesTestFile.open(nodesFile.c_str());
 	if (!nodesTestFile.is_open())
 		throw InexistentFile(nodesFile);
 
 	ifstream poiTestFile;
-	poiTestFile.open(poiFile);
+	poiTestFile.open(poiFile.c_str());
 	if (!poiTestFile.is_open())
 		throw InexistentFile(poiFile);
 /*
@@ -68,7 +68,7 @@ unsigned short int mainMenu() {
 	return option;
 }
 
-void mainOption(SuperMarketNetwork &smn) {
+void mainOption(MarketDeliverySystem &smn) {
 	unsigned short int option;
 
 	while ((option = mainMenu())) {
@@ -112,7 +112,7 @@ unsigned short int superMarketMenu() {
 }
 
 
-void superMarketOptions(SuperMarketNetwork &smn) {
+void superMarketOptions(MarketDeliverySystem &smn) {
 	unsigned int option;
 
 	while ((option = superMarketMenu())) {
@@ -159,7 +159,7 @@ unsigned short int distributionMenu() {
 }
 
 
-void distributionOptions(SuperMarketNetwork & smn) {
+void distributionOptions(MarketDeliverySystem & smn) {
 	unsigned int option;
 
 	while ((option = distributionMenu())) {
@@ -205,7 +205,7 @@ unsigned short int graphViewerMenu() {
 }
 
 
-void graphViewerOptions(SuperMarketNetwork & smn) {
+void graphViewerOptions(MarketDeliverySystem & smn) {
 	unsigned int option;
 
 	while ((option = graphViewerMenu()))

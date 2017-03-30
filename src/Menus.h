@@ -1,22 +1,22 @@
 #pragma once
 
 #include <iostream>
-#include "SuperMarketNetwork.h"
+#include "MarketDeliverySystem.h"
 
 void start(string &map, string &purchasesFile);
 
 unsigned short int mainMenu();
 
-void mainOption(SuperMarketNetwork &smn);
+void mainOption(MarketDeliverySystem &smn);
 
 unsigned short int superMarketMenu();
 
-void superMarketOptions(SuperMarketNetwork &smn);
+void superMarketOptions(MarketDeliverySystem &smn);
 
 unsigned short int distributionMenu();
 
-void distributionOptions(SuperMarketNetwork & smn);
+void distributionOptions(MarketDeliverySystem & smn);
 
 unsigned short int graphViewerMenu();
 
-void graphViewerOptions(SuperMarketNetwork & smn);
+void graphViewerOptions(MarketDeliverySystem & smn);

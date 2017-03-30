@@ -85,7 +85,7 @@ bool MarketDeliverySystem::readFiles(string &connectionsFile, string &edgesFile,
 		InfoVertex* node1 = graph.getVertex(node1ID)->getInfoV();
 		InfoVertex* node2= graph.getVertex(node2ID)->getInfoV();
 
-		graph.addEdge(node1ID, node2ID, getDistanceFromLatLonInKm(node1->getLat(),node1->getLon(), node2->getLat(), node2->getLon()));
+		graph.addEdge(node1ID, node2ID, getDistanceFromLatLonInKm(node1->getY(),node1->getX(), node2->getY(), node2->getX()));
 	}
 
 	connections.close();
@@ -152,8 +152,8 @@ void MarketDeliverySystem::graphInfoToGV() {
 	vector<Vertex<long long int> *> vertex = graph.getVertexSet();
 	//Adds each node with resized coordinates to match window setup
 	for (int i = 0; i < graph.getNumVertex(); i++) {
-		int x = resizeLong(vertex[i]->getInfoV()->getLon(), l, GV_WINDOW_WIDTH);
-		int y = resizeLat(vertex[i]->getInfoV()->getLat(), l, GV_WINDOW_HEIGHT);
+		int x = resizeLong(vertex[i]->getInfoV()->getX(), l, GV_WINDOW_WIDTH);
+		int y = resizeLat(vertex[i]->getInfoV()->getY(), l, GV_WINDOW_HEIGHT);
 
 		gv->addNode(i, x, y);
 
@@ -196,17 +196,17 @@ LimitCoords getLimitCoords(Graph<long long int> g) {
 
 	vector<Vertex<long long int> *> vertex = g.getVertexSet();
 	for (int i = 0; i < g.getNumVertex(); i++) {
-		if (vertex[i]->getInfoV()->getLat() < minLat)
-			minLat = vertex[i]->getInfoV()->getLat();
+		if (vertex[i]->getInfoV()->getY() < minLat)
+			minLat = vertex[i]->getInfoV()->getY();
 
-		if (vertex[i]->getInfoV()->getLon() < minLong)
-			minLong = vertex[i]->getInfoV()->getLon();
+		if (vertex[i]->getInfoV()->getX() < minLong)
+			minLong = vertex[i]->getInfoV()->getX();
 
-		if (vertex[i]->getInfoV()->getLat() > maxLat)
-			maxLat = vertex[i]->getInfoV()->getLat();
+		if (vertex[i]->getInfoV()->getY() > maxLat)
+			maxLat = vertex[i]->getInfoV()->getY();
 
-		if (vertex[i]->getInfoV()->getLon() > maxLong)
-			maxLong = vertex[i]->getInfoV()->getLon();
+		if (vertex[i]->getInfoV()->getX() > maxLong)
+			maxLong = vertex[i]->getInfoV()->getX();
 	}
 
 	l.maxLat = maxLat;

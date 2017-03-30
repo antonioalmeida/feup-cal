@@ -15,20 +15,19 @@ using namespace std;
 class InfoVertex {
 private:
 	string type;
-	double lat;
-	double lon;
+	double x;
+	double y;
 	bool delivered;
 public:
 	InfoVertex();
-	InfoVertex(double lat, double lon);
-	InfoVertex(double lat, double lon,string type);
+	InfoVertex(double x, double y, string type = "");
 	virtual ~InfoVertex();
 	string getType();
 	void setType(string type);
-	double getLat();
-	double getLon();
+	double getX();
+	double getY();
 	bool getDelivered();
-	bool setDelivered();
+	void toggleDelivered();
 };
 
 #endif /* SRC_INFOVERTEX_H_ */
