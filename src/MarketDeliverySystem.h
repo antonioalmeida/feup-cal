@@ -28,30 +28,27 @@
  */
 struct LimitCoords
 {
-	double maxLat;
-	double minLat;
-	double maxLong;
-	double minLong;
+	double maxY;
+	double minY;
+	double maxX;
+	double minX;
 };
 
 /**
  * Stores in a LimitCoords struct the max coordinate values of map graph g
  */
 LimitCoords getLimitCoords(Graph<long long int> g);
-int resizeLat(double lat, LimitCoords l, float windowH);
-int resizeLong(double lon, LimitCoords l, float windowW);
+int resizeY(double y, LimitCoords l, float windowH);
+int resizeX(double x, LimitCoords l, float windowW);
 
 double deg2rad(double deg);
 double getDistanceFromLatLonInKm(double lat1,double lon1,double lat2,double lon2);
 #endif /* SRC_MarketDeliverySystem_H_ */
 
-
 class MarketDeliverySystem {
 private:
-	string map;
-
 	Graph<long long int> graph;
-	GraphViewer * gv;
+	GraphViewer *gv;
 
 	vector<long long int> superMarket;
 	vector<long long int> clients;
@@ -60,9 +57,9 @@ private:
 
 public:
 	MarketDeliverySystem();
+	MarketDeliverySystem(string &connectionsFile, string &edgesFile, string &nodesFile, string &infoFile);
 	virtual ~MarketDeliverySystem();
 
-	bool readFiles(string &connectionsFile, string &edgesFile, string &nodesFile, string &infoFile);
 	void updateMap();
 	void eraseMap();
 

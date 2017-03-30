@@ -38,7 +38,7 @@ public:
 	void setInfoV(InfoVertex infoV);
 	void incIndegree();
 	void decIndegree();
-	Vertex(T in);
+	Vertex(T in, InfoVertex extraIn);
 	friend class Graph<T>;
 };
 
@@ -66,7 +66,7 @@ bool Vertex<T>::removeEdgeTo(Vertex<T> *d) {
 }
 
 template <class T>
-Vertex<T>::Vertex(T in): info(in), visited(false), indegree(0), processing(false), dist(0), path(0){}
+Vertex<T>::Vertex(T in, InfoVertex extraIn): info(in), infoV(extraIn), visited(false), indegree(0), processing(false), dist(0), path(0) {}
 
 
 template <class T>
@@ -115,7 +115,7 @@ class Graph {
 	void dfs(Vertex<T> *v, vector<T> &res) const;
 	void dfs_aux(Vertex<T> *v, vector<T> &res) const;
 public:
-	bool addVertex(const T &in);
+	bool addVertex(const T &in, const InfoVertex &extraIn);
 	bool addEdge(const T &sourc, const T &dest, double w);
 	bool removeVertex(const T &in);
 	bool removeEdge(const T &sourc, const T &dest);
@@ -161,12 +161,12 @@ vector<Vertex<T> * > Graph<T>::getVertexSet() const {
 }
 
 template <class T>
-bool Graph<T>::addVertex(const T &in) {
+bool Graph<T>::addVertex(const T &in, const InfoVertex &extraIn) {
 	typename vector<Vertex<T>*>::iterator it= vertexSet.begin();
 	typename vector<Vertex<T>*>::iterator ite= vertexSet.end();
 	for (; it!=ite; it++)
 		if ((*it)->info == in) return false;
-	Vertex<T> *v1 = new Vertex<T>(in);
+	Vertex<T> *v1 = new Vertex<T>(in, extraIn);
 	vertexSet.push_back(v1);
 	return true;
 }

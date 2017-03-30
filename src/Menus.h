@@ -1,9 +1,10 @@
-#pragma once
+#ifndef SRC_MENUS_H
+#define STR_MENUS_H
 
 #include <iostream>
 #include "MarketDeliverySystem.h"
 
-void start(string &map, string &purchasesFile);
+void start(string &connectionsFile, string &edgesFile, string &nodesFile, string &infoFile);
 
 unsigned short int mainMenu();
 
@@ -20,3 +21,5 @@ void distributionOptions(MarketDeliverySystem & smn);
 unsigned short int graphViewerMenu();
 
 void graphViewerOptions(MarketDeliverySystem & smn);
+
+#endif

@@ -2,14 +2,15 @@
 
 using namespace std;
 
-void start(string &map, string &purchasesFile) {
+void start(string &connectionsFile, string &edgesFile, string &nodesFile, string &infoFile) {
 	cout << "Insert the city name: " << endl;
+	string map;
 	getline(cin, map);
 
-	string connectionsFile = map + "Connections.txt";
-	string edgesFile = map + "Edges.txt";
-	string nodesFile = map + "Nodes.txt";
-	string poiFile = map + "POI.txt";
+	connectionsFile = map + "Connections.txt";
+	edgesFile = map + "Edges.txt";
+	nodesFile = map + "Nodes.txt";
+	infoFile = map + "Info.txt";
 
 	ifstream connectionsTestFile;
 	connectionsTestFile.open(connectionsFile.c_str());
@@ -26,10 +27,10 @@ void start(string &map, string &purchasesFile) {
 	if (!nodesTestFile.is_open())
 		throw InexistentFile(nodesFile);
 
-	ifstream poiTestFile;
-	poiTestFile.open(poiFile.c_str());
-	if (!poiTestFile.is_open())
-		throw InexistentFile(poiFile);
+	ifstream infoTestFile;
+	infoTestFile.open(infoFile.c_str());
+	if (!infoTestFile.is_open())
+		throw InexistentFile(infoFile);
 /*
 	cout << "Insert the purchase's file name: " << endl;
 	getline(cin, purchasesFile);
@@ -38,12 +39,14 @@ void start(string &map, string &purchasesFile) {
 	if (!purchasesTestFile.is_open())
 		throw InexistentFile(purchasesFile);
 */
-	//No failure in opening = good to go. Close temporary files to avoid unwanted trouble
+	//No failure in opening = good to go.
+	//Close temporary files to avoid unwanted trouble
 	connectionsTestFile.close();
 	edgesTestFile.close();
 	nodesTestFile.close();
-	poiTestFile.close();
+	infoTestFile.close();
 	//purchasesTestFile.close();
+
 }
 
 
@@ -78,6 +81,7 @@ void mainOption(MarketDeliverySystem &smn) {
 		case 2: distributionOptions(smn);
 			break;
 		case 3:
+			smn.graphInfoToGV();
 			//graphOptions(smn);
 			break;
 		}
