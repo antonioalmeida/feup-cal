@@ -1,29 +1,28 @@
 /*
- * SuperMarketNetwork.cpp
+ * MarketDeliverySystem.cpp
  *
  *  Created on: 22/03/2017
  *      Author: darksystem
  */
 
-#include "SuperMarketNetwork.h"
+#include "MarketDeliverySystem.h"
 
 const double PIx = 3.141592653589793;
 
-SuperMarketNetwork::SuperMarketNetwork() {
-	string map = "Esposende";
+MarketDeliverySystem::MarketDeliverySystem() {
 	gv = NULL;
-	readFiles();
+	string connectionsFile = "EsposendeConnections.txt";
+	string edgesFile = "EsposendeConnections.txt";
+	string nodesFile = "EsposendeNodes.txt";
+	string infoFile = "EsposendeInfo.txt";
+	readFiles(connectionsFile, edgesFile, nodesFile, infoFile);
 }
 
-SuperMarketNetwork::~SuperMarketNetwork() {
+MarketDeliverySystem::~MarketDeliverySystem() {
 	// TODO Auto-generated destructor stub
 }
 
-bool SuperMarketNetwork::readFiles() {
-	string connectionsFile = map + "Connections.txt";
-	string edgesFile = map + "Edges.txt";
-	string nodesFile = map + "Nodes.txt";
-	string infoFile = map + "Info.txt";
+bool MarketDeliverySystem::readFiles(string &connectionsFile, string &edgesFile, string &nodesFile, string &infoFile) {
 
 	ifstream nodes, edges, connections, info;
 	string line;
@@ -31,16 +30,16 @@ bool SuperMarketNetwork::readFiles() {
 	long long int nodeID;
 	double latitudeInDegrees, longitudeInDegrees;
 
+	const string temp = nodesFile;
 
-	nodes.open("EsposendeNodes.txt");
+	nodes.open(nodesFile.c_str());
 
 	if (!nodes) {
-		cerr << "Unable to open file nodesFile.txt";
+		cerr << "Unable to open file " << nodesFile << endl;
 		exit(1);   // call system to stop
 	}
 
-	while(getline(nodes, line))
-	{
+	while(getline(nodes, line)) {
 		stringstream linestream(line);
 		string data;
 
@@ -53,7 +52,7 @@ bool SuperMarketNetwork::readFiles() {
 		graph.addVertex(nodeID);
 		InfoVertex info = InfoVertex(latitudeInDegrees, longitudeInDegrees);
 
-		for(unsigned int i = 0; i< graph.getVertexSet().size();i++){
+		for(unsigned int i = 0; i< graph.getVertexSet().size();i++) {
 			if(graph.getVertexSet().at(i)->getInfo()==nodeID){
 				graph.getVertexSet().at(i)->setInfoV(info);
 				break;
@@ -63,10 +62,10 @@ bool SuperMarketNetwork::readFiles() {
 
 	nodes.close();
 
-	connections.open("EsposendeConnections.txt");
+	connections.open(connectionsFile.c_str());
 
 	if (!connections) {
-		cerr << "Unable to open file datafile.txt";
+		cerr << "Unable to open file " << connectionsFile << endl;
 		exit(1);   // call system to stop
 	}
 
@@ -93,15 +92,14 @@ bool SuperMarketNetwork::readFiles() {
 
 	char ident;
 
-	info.open("EsposendeInfo.txt");
+	info.open(nodesFile.c_str());
 
 	if (!info) {
-		cerr << "Unable to open file nodesFile.txt";
+		cerr << "Unable to open file " << nodesFile << endl;
 		exit(1);   // call system to stop
 	}
 
-	while(getline(info, line))
-	{
+	while(getline(info, line)) {
 		stringstream linestream(line);
 		string data;
 
@@ -111,11 +109,11 @@ bool SuperMarketNetwork::readFiles() {
 
 
 
-		if(ident == 'S'){
+		if(ident == 'S') {
 			superMarket.push_back(nodeID);
 			graph.getVertex(nodeID)->getInfoV()->setType("super");
 		}
-		else  {
+		else {
 			clients.push_back(nodeID);
 			graph.getVertex(nodeID)->getInfoV()->setType("client");
 		}
@@ -127,18 +125,16 @@ bool SuperMarketNetwork::readFiles() {
 	l = getLimitCoords(graph); //update coords
 }
 
-
-void SuperMarketNetwork::updateMap() {
+void MarketDeliverySystem::updateMap() {
 	gv->rearrange();
 }
 
-void SuperMarketNetwork::eraseMap() {
+void MarketDeliverySystem::eraseMap() {
 	gv->closeWindow();
 	gv = NULL;
 }
 
-
-void SuperMarketNetwork::graphInfoToGV() {
+void MarketDeliverySystem::graphInfoToGV() {
 
 	ostringstream ss;
 	ss << map << ".png";
@@ -234,7 +230,6 @@ double deg2rad(double deg) {
 	return deg * (PIx/180);
 }
 
-
 double getDistanceFromLatLonInKm(double lat1,double lon1,double lat2,double lon2) {
 	double R = 6371; // Radius of the earth in km
 	double dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -247,6 +242,3 @@ double getDistanceFromLatLonInKm(double lat1,double lon1,double lat2,double lon2
 	double d = R * c; // Distance in km
 	return d;
 }
-
-
-

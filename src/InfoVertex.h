@@ -29,7 +29,6 @@ public:
 	double getLon();
 	bool getDelivered();
 	bool setDelivered();
-
 };
 
 #endif /* SRC_INFOVERTEX_H_ */

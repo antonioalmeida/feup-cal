@@ -1,8 +1,8 @@
-#include "SuperMarketNetwork.h"
+#include "MarketDeliverySystem.h"
 
 int main() {
 
-	SuperMarketNetwork smn = SuperMarketNetwork();
+	MarketDeliverySystem smn = MarketDeliverySystem();
 	smn.graphInfoToGV();
 	getchar();
 	return 0;

@@ -1,12 +1,6 @@
-/*
- * SuperMarketNetwork.h
- *
- *  Created on: 22/03/2017
- *      Author: darksystem
- */
 
-#ifndef SRC_SUPERMARKETNETWORK_H_
-#define SRC_SUPERMARKETNETWORK_H_
+#ifndef SRC_MarketDeliverySystem_H_
+#define SRC_MarketDeliverySystem_H_
 
 #include <float.h>
 #include <algorithm>
@@ -49,10 +43,10 @@ int resizeLong(double lon, LimitCoords l, float windowW);
 
 double deg2rad(double deg);
 double getDistanceFromLatLonInKm(double lat1,double lon1,double lat2,double lon2);
-#endif /* SRC_SUPERMARKETNETWORK_H_ */
+#endif /* SRC_MarketDeliverySystem_H_ */
 
 
-class SuperMarketNetwork {
+class MarketDeliverySystem {
 private:
 	string map;
 
@@ -65,11 +59,10 @@ private:
 	LimitCoords l;
 
 public:
-	SuperMarketNetwork();
-	virtual ~SuperMarketNetwork();
+	MarketDeliverySystem();
+	virtual ~MarketDeliverySystem();
 
-	bool readFiles();
-
+	bool readFiles(string &connectionsFile, string &edgesFile, string &nodesFile, string &infoFile);
 	void updateMap();
 	void eraseMap();
 
