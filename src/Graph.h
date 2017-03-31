@@ -34,7 +34,7 @@ public:
 	int getIndegree() const;
 	vector<Edge<T> > getAdj(){return adj;};
 	T getInfo() const;
-	InfoVertex* getInfoV();
+	InfoVertex getInfoV();
 	void setInfoV(InfoVertex infoV);
 	void incIndegree();
 	void decIndegree();
@@ -43,8 +43,8 @@ public:
 };
 
 template <class T>
-InfoVertex* Vertex<T>::getInfoV(){
-	return &infoV;
+InfoVertex Vertex<T>::getInfoV(){
+	return infoV;
 }
 template <class T>
 void Vertex<T>::setInfoV(InfoVertex infoV){

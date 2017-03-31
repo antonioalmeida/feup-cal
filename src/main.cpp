@@ -5,9 +5,9 @@ int main() {
 	string connectionsFile, edgesFile, nodesFile, infoFile;
 
 	//TO DO: put call below inside try-catch
-	start(connectionsFile, edgesFile, nodesFile, infoFile);
+	start(nodesFile, edgesFile);
 
-	MarketDeliverySystem smn(connectionsFile, edgesFile, nodesFile, infoFile);
+	MarketDeliverySystem smn(nodesFile, edgesFile);
 	mainOption(smn);
 
 	getchar();

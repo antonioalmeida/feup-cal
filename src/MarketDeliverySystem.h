@@ -24,40 +24,22 @@
 #define GV_WINDOW_HEIGHT 700	// gv y resolution
 
 /**
- * LimitCoords will store the highest and lowest longitude and latitude of the nodes
- */
-struct LimitCoords
-{
-	double maxY;
-	double minY;
-	double maxX;
-	double minX;
-};
-
-/**
  * Stores in a LimitCoords struct the max coordinate values of map graph g
  */
-LimitCoords getLimitCoords(Graph<long long int> g);
-int resizeY(double y, LimitCoords l, float windowH);
-int resizeX(double x, LimitCoords l, float windowW);
 
-double deg2rad(double deg);
-double getDistanceFromLatLonInKm(double lat1,double lon1,double lat2,double lon2);
 #endif /* SRC_MarketDeliverySystem_H_ */
 
 class MarketDeliverySystem {
 private:
-	Graph<long long int> graph;
+	Graph<unsigned int> graph;
 	GraphViewer *gv;
 
-	vector<long long int> superMarket;
-	vector<long long int> clients;
-
-	LimitCoords l;
+	vector<unsigned int> superMarket;
+	vector<unsigned int> clients;
 
 public:
 	MarketDeliverySystem();
-	MarketDeliverySystem(string &connectionsFile, string &edgesFile, string &nodesFile, string &infoFile);
+	MarketDeliverySystem(string &nodesFile, string &edgesFile);
 	virtual ~MarketDeliverySystem();
 
 	void updateMap();

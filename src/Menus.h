@@ -4,7 +4,7 @@
 #include <iostream>
 #include "MarketDeliverySystem.h"
 
-void start(string &connectionsFile, string &edgesFile, string &nodesFile, string &infoFile);
+void start(string &nodesFile, string &edgesFile);
 
 unsigned short int mainMenu();
 

@@ -2,21 +2,13 @@
 
 using namespace std;
 
-void start(string &connectionsFile, string &edgesFile, string &nodesFile, string &infoFile) {
+void start(string &nodesFile, string &edgesFile) {
 	cout << "Insert the city name: " << endl;
 	string map;
 	getline(cin, map);
 
-	connectionsFile = map + "Connections.txt";
 	edgesFile = map + "Edges.txt";
 	nodesFile = map + "Nodes.txt";
-	infoFile = map + "Info.txt";
-
-	ifstream connectionsTestFile;
-	connectionsTestFile.open(connectionsFile.c_str());
-	if (!connectionsTestFile.is_open()) //If opening fails, then filename is not valid
-		throw InexistentFile(connectionsFile);
-
 	ifstream edgesTestFile;
 	edgesTestFile.open(edgesFile.c_str());
 	if (!edgesTestFile.is_open())
@@ -27,25 +19,10 @@ void start(string &connectionsFile, string &edgesFile, string &nodesFile, string
 	if (!nodesTestFile.is_open())
 		throw InexistentFile(nodesFile);
 
-	ifstream infoTestFile;
-	infoTestFile.open(infoFile.c_str());
-	if (!infoTestFile.is_open())
-		throw InexistentFile(infoFile);
-/*
-	cout << "Insert the purchase's file name: " << endl;
-	getline(cin, purchasesFile);
-	ifstream purchasesTestFile;
-	purchasesTestFile.open(purchasesFile);
-	if (!purchasesTestFile.is_open())
-		throw InexistentFile(purchasesFile);
-*/
 	//No failure in opening = good to go.
 	//Close temporary files to avoid unwanted trouble
-	connectionsTestFile.close();
 	edgesTestFile.close();
 	nodesTestFile.close();
-	infoTestFile.close();
-	//purchasesTestFile.close();
 
 }
 
