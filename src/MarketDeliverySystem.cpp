@@ -54,6 +54,17 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 		graph.addEdge(node1, node2, weight);
 		graph.addEdge(node2, node1, weight);
 	}
+
+	graph.floydWarshallShortestPath();
+
+	stringstream ss;
+	vector<unsigned int> path = graph.getfloydWarshallPath(21, 3);
+	ss.str("");
+	for(unsigned int i = 0; i < path.size(); i++) {
+		ss << path[i] << " ";
+	}
+
+	cout << ss.str() << endl;
 }
 
 MarketDeliverySystem::~MarketDeliverySystem() {
