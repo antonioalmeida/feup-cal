@@ -7,6 +7,8 @@
 
 #include "MarketDeliverySystem.h"
 
+#define TRUCK_CAPACITY 15
+
 MarketDeliverySystem::MarketDeliverySystem() {
 	gv = NULL;
 }
@@ -34,8 +36,13 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 		linestream >> data >> currentX >> currentY;
 		InfoVertex info = InfoVertex(currentX, currentY, data);
 
+		if(info.getType() == "house")
+			clients.push_back(nodeID);
+
 		graph.addVertex(nodeID++, info);
+
 	}
+
 
 	nodes.close();
 
@@ -65,6 +72,21 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 	}
 
 	cout << ss.str() << endl;
+
+
+	//Testing closestHouse
+	unsigned int test = getClosestHouse(15);
+	cout << "Closest house " << test << endl;
+
+	//Testing truckPath
+	vector<unsigned int> testPath = truckPath(0);
+	ss.str("");
+	for(unsigned int i = 0; i < testPath.size(); i++) {
+		ss << testPath[i] << " ";
+	}
+
+	cout << ss.str() << endl;
+
 }
 
 MarketDeliverySystem::~MarketDeliverySystem() {
@@ -119,4 +141,49 @@ void MarketDeliverySystem::graphInfoToGV() {
 	}
 
 	gv->rearrange();
+}
+
+unsigned int MarketDeliverySystem::getClosestHouse(unsigned int id) {
+
+	unsigned int lowestWeight = 99999999;
+	int resultId = -1;
+	cout << "Source id = " << id << endl;
+
+	for(int i = 0; i < clients.size(); i++) {
+		unsigned int currentId = clients[i];
+		int currentWeight = graph.nodeDistance(id, currentId);
+
+		bool currentVisited = graph.getVertex(currentId)->getInfoV().getDelivered();
+		cout << "Current ID : " << currentId << " cost : " << currentWeight << " visited : " << currentVisited << endl;
+
+		if(currentVisited)
+			continue;
+
+		if(currentWeight < lowestWeight && currentWeight != 0) {
+			resultId = currentId;
+			lowestWeight = currentWeight;
+		}
+	}
+
+	return resultId;
+}
+
+vector<unsigned int> MarketDeliverySystem::truckPath(unsigned int originId) {
+	unsigned int currentId = originId;
+
+	vector<unsigned int> path;
+	for(int i = 0; i < TRUCK_CAPACITY; i++) {
+
+		unsigned int nextId = getClosestHouse(currentId);
+
+		vector<unsigned int> currentPath = graph.getfloydWarshallPath(currentId, nextId);
+
+		graph.getVertex(currentId)->setDelivered(true);
+		vector<unsigned int>::iterator it = currentPath.begin(); it++;
+		path.insert(path.end(), it, currentPath.end());
+
+		currentId = nextId;
+	}
+
+	return path;
 }

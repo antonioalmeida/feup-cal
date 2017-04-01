@@ -40,6 +40,6 @@ bool InfoVertex::getDelivered() {
 	return delivered;
 }
 
-void InfoVertex::toggleDelivered() {
-	delivered = !delivered;
+void InfoVertex::setDelivered(bool val) {
+	delivered = val;
 }

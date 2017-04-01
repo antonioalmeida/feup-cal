@@ -41,6 +41,7 @@ public:
 	void incIndegree();
 	void decIndegree();
 	Vertex(T in, InfoVertex extraIn);
+	void setDelivered(bool val);
 	friend class Graph<T>;
 };
 
@@ -98,6 +99,11 @@ T Vertex<T>::getInfo() const{
 }
 
 template <class T>
+void Vertex<T>::setDelivered(bool val) {
+	infoV.setDelivered(val);
+}
+
+template <class T>
 class Edge {
 	Vertex<T> * dest;
 	double weight;
@@ -147,6 +153,7 @@ public:
 	int edgeCost(int vOrigIndex, int vDestIndex);
 	vector<T> getfloydWarshallPath(const T &origin, const T &dest);
 	void getfloydWarshallPathAux(int index1, int index2, vector<T> & res);
+	int nodeDistance(int vOrigIndex, int vDestIndex);
 };
 
 class CycleException{};
@@ -589,6 +596,11 @@ int Graph<T>::edgeCost(int vOrigIndex, int vDestIndex)
 	}
 
 	return INT_INFINITY;
+}
+
+template<class T>
+int Graph<T>::nodeDistance(int vOrigIndex, int vDestIndex) {
+	return W[vOrigIndex][vDestIndex];
 }
 
 #endif /* GRAPH_H_ */

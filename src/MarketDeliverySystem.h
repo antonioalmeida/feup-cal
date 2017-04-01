@@ -46,5 +46,8 @@ public:
 	void eraseMap();
 
 	void graphInfoToGV();
+
+	unsigned int getClosestHouse(unsigned int id);
+	vector<unsigned int> truckPath(unsigned int originId);
 };
 

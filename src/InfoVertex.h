@@ -27,7 +27,7 @@ public:
 	double getX();
 	double getY();
 	bool getDelivered();
-	void toggleDelivered();
+	void setDelivered(bool val);
 };
 
 #endif /* SRC_INFOVERTEX_H_ */
