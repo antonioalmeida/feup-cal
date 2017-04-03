@@ -23,6 +23,8 @@
 #define GV_WINDOW_WIDTH 1600 	// graph viewer x resolution
 #define GV_WINDOW_HEIGHT 700	// gv y resolution
 
+#define INT_INFINITY 999999
+
 /**
  * Stores in a LimitCoords struct the max coordinate values of map graph g
  */
@@ -47,7 +49,10 @@ public:
 
 	void graphInfoToGV();
 
-	unsigned int getClosestHouse(unsigned int id);
-	vector<unsigned int> truckPath(unsigned int originId);
+	int getClosestHouse(int id);
+	vector<unsigned int> truckPath(int originId);
+	vector<vector<unsigned int>> singleMarketTruckPaths(int originId);
+	void resetVisited();
+	int getUnvisitedHouse();
 };
 

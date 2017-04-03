@@ -7,7 +7,7 @@
 
 #include "MarketDeliverySystem.h"
 
-#define TRUCK_CAPACITY 15
+#define TRUCK_CAPACITY 10
 
 MarketDeliverySystem::MarketDeliverySystem() {
 	gv = NULL;
@@ -64,21 +64,12 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 
 	graph.floydWarshallShortestPath();
 
-	stringstream ss;
-	vector<unsigned int> path = graph.getfloydWarshallPath(21, 3);
-	ss.str("");
-	for(unsigned int i = 0; i < path.size(); i++) {
-		ss << path[i] << " ";
-	}
-
-	cout << ss.str() << endl;
-
-
 	//Testing closestHouse
 	unsigned int test = getClosestHouse(15);
 	cout << "Closest house " << test << endl;
 
 	//Testing truckPath
+	stringstream ss;
 	vector<unsigned int> testPath = truckPath(0);
 	ss.str("");
 	for(unsigned int i = 0; i < testPath.size(); i++) {
@@ -86,6 +77,21 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 	}
 
 	cout << ss.str() << endl;
+
+	//Testing singleMarketTruckPaths
+	resetVisited();
+	vector<vector <unsigned int>> result = singleMarketTruckPaths(0);
+
+
+	for(int i = 0; i < result.size(); i++) {
+		stringstream ss2;
+		ss2.str("");
+		for(int j = 0; j < result[i].size(); j++) {
+			ss2 << result[i][j] << " ";
+		}
+
+		cout << ss2.str() << endl;
+	}
 
 }
 
@@ -143,18 +149,18 @@ void MarketDeliverySystem::graphInfoToGV() {
 	gv->rearrange();
 }
 
-unsigned int MarketDeliverySystem::getClosestHouse(unsigned int id) {
+int MarketDeliverySystem::getClosestHouse(int id) {
 
-	unsigned int lowestWeight = 99999999;
+	unsigned int lowestWeight = INT_INFINITY;
 	int resultId = -1;
-	cout << "Source id = " << id << endl;
+	//cout << "Source id = " << id << endl;
 
 	for(int i = 0; i < clients.size(); i++) {
 		unsigned int currentId = clients[i];
 		int currentWeight = graph.nodeDistance(id, currentId);
 
 		bool currentVisited = graph.getVertex(currentId)->getInfoV().getDelivered();
-		cout << "Current ID : " << currentId << " cost : " << currentWeight << " visited : " << currentVisited << endl;
+		//cout << "Current ID : " << currentId << " cost : " << currentWeight << " visited : " << currentVisited << endl;
 
 		if(currentVisited)
 			continue;
@@ -165,16 +171,24 @@ unsigned int MarketDeliverySystem::getClosestHouse(unsigned int id) {
 		}
 	}
 
+	if(resultId > clients[clients.size()-1])
+		return -1;
+
 	return resultId;
 }
 
-vector<unsigned int> MarketDeliverySystem::truckPath(unsigned int originId) {
-	unsigned int currentId = originId;
+vector<unsigned int> MarketDeliverySystem::truckPath(int originId) {
+	int currentId = originId;
 
 	vector<unsigned int> path;
+	path.push_back(currentId);
+
 	for(int i = 0; i < TRUCK_CAPACITY; i++) {
 
-		unsigned int nextId = getClosestHouse(currentId);
+		int nextId = getClosestHouse(currentId);
+		cout << "Current id : " << currentId << " next id : " << nextId << endl;
+		if(nextId == -1) //No edge to connect the house to
+			break;
 
 		vector<unsigned int> currentPath = graph.getfloydWarshallPath(currentId, nextId);
 
@@ -185,5 +199,50 @@ vector<unsigned int> MarketDeliverySystem::truckPath(unsigned int originId) {
 		currentId = nextId;
 	}
 
+	graph.getVertex(currentId)->setDelivered(true);
+
 	return path;
+}
+
+vector<vector<unsigned int>> MarketDeliverySystem::singleMarketTruckPaths(int originId) {
+
+	vector<vector<unsigned int>> pathsMatrix;
+
+	int currentId = originId;
+
+	int index = 0;
+	while(true) {
+		cout << "0" << endl;
+		vector<unsigned int> currentPath = truckPath(currentId);
+		cout << "1" << endl;
+		pathsMatrix.push_back(currentPath);
+		cout << "2" << endl;
+
+		if(currentPath.size() > 0)
+			currentId = getClosestHouse(currentPath.at(currentPath.size()-1)); //Getting id for next iteration
+		else
+			currentId = getUnvisitedHouse();
+
+		if(currentId == -1)
+			break;
+
+		cout << "3" << endl;
+		cout << "Next id : " << currentId << endl;
+	}
+
+	return pathsMatrix;
+}
+
+void MarketDeliverySystem::resetVisited() {
+	for(int i = 0; i < graph.getNumVertex(); i++)
+		graph.getVertexSet().at(i)->setDelivered(false);
+}
+
+int MarketDeliverySystem::getUnvisitedHouse() {
+	for(int i = 0; i < clients.size(); i++) {
+		if(!graph.getVertex(clients[i])->getInfoV().getDelivered())
+			return clients[i];
+	}
+
+	return -1;
 }
