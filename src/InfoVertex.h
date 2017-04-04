@@ -18,6 +18,7 @@ private:
 	double x;
 	double y;
 	bool delivered;
+	unsigned int supermarket;
 public:
 	InfoVertex();
 	InfoVertex(double x, double y, string type = "");
@@ -28,6 +29,8 @@ public:
 	double getY();
 	bool getDelivered();
 	void setDelivered(bool val);
+	unsigned int getSupermarket();
+	void setSupermarket(unsigned int id);
 };
 
 #endif /* SRC_INFOVERTEX_H_ */

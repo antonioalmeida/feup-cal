@@ -7,6 +7,8 @@
 
 #include "InfoVertex.h"
 
+#define INT_INFINITY 999999
+
 InfoVertex::InfoVertex(){};
 
 InfoVertex::InfoVertex(double x, double y, string type) {
@@ -14,6 +16,7 @@ InfoVertex::InfoVertex(double x, double y, string type) {
 	this->x = x;
 	this->y = y;
 	this->delivered = false;
+	this->supermarket = INT_INFINITY;
 }
 
 InfoVertex::~InfoVertex() {
@@ -24,7 +27,7 @@ string InfoVertex::getType() {
 	return type;
 }
 
-void InfoVertex:: setType(string type) {
+void InfoVertex::setType(string type) {
 	this->type = type;
 }
 
@@ -42,4 +45,12 @@ bool InfoVertex::getDelivered() {
 
 void InfoVertex::setDelivered(bool val) {
 	delivered = val;
+}
+
+unsigned int InfoVertex::getSupermarket() {
+	return supermarket;
+}
+
+void InfoVertex::setSupermarket(unsigned int id) {
+	supermarket = id;
 }

@@ -36,7 +36,7 @@ private:
 	Graph<unsigned int> graph;
 	GraphViewer *gv;
 
-	vector<unsigned int> superMarket;
+	vector<unsigned int> supermarkets;
 	vector<unsigned int> clients;
 
 public:
@@ -50,9 +50,18 @@ public:
 	void graphInfoToGV();
 
 	int getClosestHouse(int id);
+	int getClosestHouseFromSameMarket(int id);
 	vector<unsigned int> truckPath(int originId);
 	vector<vector<unsigned int>> singleMarketTruckPaths(int originId);
 	void resetVisited();
 	int getUnvisitedHouse();
+
+	unsigned int getHouseMarket(unsigned int id);
+	void setHouseMarket(unsigned int id, unsigned int marketId);
+	void attributeMarkets();
+	vector<unsigned int> multipleMarketsTruckPath(int originId);
+	vector<vector<unsigned int>> multipleMarketsAllPaths();
+
+	void printClientsInformation();
 };
 

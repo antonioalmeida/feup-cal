@@ -37,6 +37,7 @@ public:
 	vector<Edge<T> > getAdj(){return adj;};
 	T getInfo() const;
 	InfoVertex getInfoV();
+	InfoVertex* getInfoVPtr();
 	void setInfoV(InfoVertex infoV);
 	void incIndegree();
 	void decIndegree();
@@ -49,6 +50,12 @@ template <class T>
 InfoVertex Vertex<T>::getInfoV(){
 	return infoV;
 }
+
+template <class T>
+InfoVertex* Vertex<T>::getInfoVPtr(){
+	return &infoV;
+}
+
 template <class T>
 void Vertex<T>::setInfoV(InfoVertex infoV){
 	this->infoV=infoV;
@@ -600,6 +607,10 @@ int Graph<T>::edgeCost(int vOrigIndex, int vDestIndex)
 
 template<class T>
 int Graph<T>::nodeDistance(int vOrigIndex, int vDestIndex) {
+
+	if(vOrigIndex == INT_INFINITY || vDestIndex == INT_INFINITY)
+		return INT_INFINITY;
+
 	return W[vOrigIndex][vDestIndex];
 }
 

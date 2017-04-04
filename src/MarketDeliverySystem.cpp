@@ -39,8 +39,10 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 		if(info.getType() == "house")
 			clients.push_back(nodeID);
 
-		graph.addVertex(nodeID++, info);
+		if(info.getType() == "supermarket")
+			supermarkets.push_back(nodeID);
 
+		graph.addVertex(nodeID++, info);
 	}
 
 
@@ -70,14 +72,15 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 
 	//Testing truckPath
 	stringstream ss;
-	vector<unsigned int> testPath = truckPath(0);
+	vector<unsigned int> testPath = truckPath(26);
 	ss.str("");
 	for(unsigned int i = 0; i < testPath.size(); i++) {
 		ss << testPath[i] << " ";
 	}
 
 	cout << ss.str() << endl;
-
+	resetVisited();
+/*
 	//Testing singleMarketTruckPaths
 	resetVisited();
 	vector<vector <unsigned int>> result = singleMarketTruckPaths(0);
@@ -92,7 +95,46 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 
 		cout << ss2.str() << endl;
 	}
+*/
+/*
+	//Testing truckPathMultipleMarkets
+	attributeMarkets();
+	cout << "hello bitches" << endl;
+	stringstream ss3;
+	vector<unsigned int> testPath3 = multipleMarketsTruckPath(26);
+	ss3.str("");
+	for(unsigned int i = 0; i < testPath3.size(); i++) {
+		ss3 << testPath3[i] << " ";
+	}
 
+	cout << ss3.str() << endl;
+
+	//Testing truckPathMultipleMarkets
+	stringstream ss4;
+	vector<unsigned int> testPath4 = multipleMarketsTruckPath(0);
+	ss4.str("");
+	for(unsigned int i = 0; i < testPath4.size(); i++) {
+		ss4 << testPath4[i] << " ";
+	}
+
+	cout << ss4.str() << endl;
+	*/
+	//Testing multipleMarketsAllPaths
+	resetVisited();
+	attributeMarkets();
+	vector<vector <unsigned int>> result = multipleMarketsAllPaths();
+
+	for(int i = 0; i < result.size(); i++) {
+		stringstream ss5;
+		ss5.str("");
+		for(int j = 0; j < result[i].size(); j++) {
+			ss5 << result[i][j] << " ";
+		}
+
+		cout << ss5.str() << endl;
+	}
+
+	printClientsInformation();
 }
 
 MarketDeliverySystem::~MarketDeliverySystem() {
@@ -177,6 +219,40 @@ int MarketDeliverySystem::getClosestHouse(int id) {
 	return resultId;
 }
 
+int MarketDeliverySystem::getClosestHouseFromSameMarket(int id) {
+	unsigned int lowestWeight = INT_INFINITY;
+	int resultId = -1;
+
+	unsigned int originMarket = graph.getVertex(id)->getInfoV().getSupermarket();
+	//cout << "Source id = " << id << endl;
+
+	for(int i = 0; i < clients.size(); i++) {
+		unsigned int currentId = clients[i];
+		int currentWeight = graph.nodeDistance(id, currentId);
+
+		unsigned int currentMarket = graph.getVertex(currentId)->getInfoV().getSupermarket();
+		if(currentMarket != originMarket)
+			continue;
+
+		bool currentVisited = graph.getVertex(currentId)->getInfoV().getDelivered();
+		//cout << "Current ID : " << currentId << " cost : " << currentWeight << " visited : " << currentVisited << endl;
+
+		if(currentVisited)
+			continue;
+
+		if(currentWeight < lowestWeight && currentWeight != 0) {
+			resultId = currentId;
+			lowestWeight = currentWeight;
+		}
+	}
+
+	if(resultId > clients[clients.size()-1])
+		return -1;
+
+	return resultId;
+
+}
+
 vector<unsigned int> MarketDeliverySystem::truckPath(int originId) {
 	int currentId = originId;
 
@@ -246,3 +322,82 @@ int MarketDeliverySystem::getUnvisitedHouse() {
 
 	return -1;
 }
+
+unsigned int MarketDeliverySystem::getHouseMarket(unsigned int id) {
+	return graph.getVertexSet().at(id)->getInfoV().getSupermarket();
+}
+
+void MarketDeliverySystem::setHouseMarket(unsigned int id, unsigned int marketId) {
+	graph.getVertexSet().at(id)->getInfoVPtr()->setSupermarket(marketId);
+}
+
+void MarketDeliverySystem::attributeMarkets() {
+	for(int i = 0; i < clients.size(); i++) {
+		for(int j = 0; j < supermarkets.size(); j++) {
+			if(graph.nodeDistance(supermarkets[j], clients[i]) < graph.nodeDistance(graph.getVertex(clients[i])->getInfoV().getSupermarket(), clients[i]))
+				setHouseMarket(clients[i], supermarkets[j]);
+		}
+	}
+
+	for(int i = 0; i < supermarkets.size(); i++)
+		setHouseMarket(supermarkets[i], supermarkets[i]);
+}
+
+vector<unsigned int> MarketDeliverySystem::multipleMarketsTruckPath(int originId) {
+	int currentId = originId;
+
+	vector<unsigned int> path;
+	path.push_back(currentId);
+
+	while(true) {
+
+		int nextId = getClosestHouseFromSameMarket(currentId);
+		cout << "Current id : " << currentId << " next id : " << nextId << endl;
+		if(nextId == -1) //No edge to connect the house to
+			break;
+
+		vector<unsigned int> currentPath = graph.getfloydWarshallPath(currentId, nextId);
+
+		graph.getVertex(currentId)->setDelivered(true);
+		vector<unsigned int>::iterator it = currentPath.begin(); it++;
+		path.insert(path.end(), it, currentPath.end());
+
+		currentId = nextId;
+	}
+
+	graph.getVertex(currentId)->setDelivered(true);
+
+	return path;
+}
+
+vector<vector<unsigned int>> MarketDeliverySystem::multipleMarketsAllPaths() {
+
+	vector<vector<unsigned int>> pathsMatrix;
+
+	for(int i = 0; i < supermarkets.size(); i++) {
+		cout << "0" << endl;
+		vector<unsigned int> currentPath = multipleMarketsTruckPath(supermarkets[i]);
+		cout << "1" << endl;
+		pathsMatrix.push_back(currentPath);
+		cout << "2" << endl;
+	}
+
+	return pathsMatrix;
+}
+
+
+void MarketDeliverySystem::printClientsInformation() {
+	for(int i = 0; i < clients.size(); i++) {
+		unsigned int market = graph.getVertex(clients[i])->getInfoV().getSupermarket();
+		bool status = graph.getVertex(clients[i])->getInfoV().getDelivered();
+
+		cout << "Client ID : " << clients[i] << ", Market : " << market << ", Status : " << (status ? "DELIVERED" : "NOT DELIVERED") << endl;
+	}
+}
+
+
+
+
+
+
+
