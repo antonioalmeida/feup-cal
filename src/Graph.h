@@ -136,7 +136,7 @@ class Graph {
 	void dfs_aux(Vertex<T> *v, vector<T> &res) const;
 
 	//exercicio 6
-	int ** W;   //weight
+	double ** W;   //weight
 	int ** P;   //path
 public:
 	bool addVertex(const T &in, const InfoVertex &extraIn);
@@ -163,10 +163,10 @@ public:
 	void bellmanFordShortestPath(const T &s);
 	void dijkstraShortestPath(const T &s);
 	void floydWarshallShortestPath();
-	int edgeCost(int vOrigIndex, int vDestIndex);
+	double edgeCost(int vOrigIndex, int vDestIndex);
 	vector<T> getfloydWarshallPath(const T &origin, const T &dest);
 	void getfloydWarshallPathAux(int index1, int index2, vector<T> & res);
-	int nodeDistance(int vOrigIndex, int vDestIndex);
+	double nodeDistance(int vOrigIndex, int vDestIndex);
 };
 
 class CycleException{};
@@ -522,11 +522,11 @@ void Graph<T>::bellmanFordShortestPath(const T &s) {
 template<class T>
 void Graph<T>::floydWarshallShortestPath() {
 
-	W = new int * [vertexSet.size()];
+	W = new double * [vertexSet.size()];
 	P = new int * [vertexSet.size()];
 	for(unsigned int i = 0; i < vertexSet.size(); i++)
 	{
-		W[i] = new int[vertexSet.size()];
+		W[i] = new double[vertexSet.size()];
 		P[i] = new int[vertexSet.size()];
 		for(unsigned int j = 0; j < vertexSet.size(); j++)
 		{
@@ -544,7 +544,7 @@ void Graph<T>::floydWarshallShortestPath() {
 				if(W[i][k] == INT_INFINITY || W[k][j] == INT_INFINITY)
 					continue;
 
-				int val = min ( W[i][j], W[i][k]+W[k][j] );
+				double val = min ( W[i][j], W[i][k]+W[k][j] );
 				if(val != W[i][j])
 				{
 					W[i][j] = val;
@@ -608,7 +608,7 @@ void Graph<T>::getfloydWarshallPathAux(int index1, int index2, vector<T> & res)
 }
 
 template<class T>
-int Graph<T>::edgeCost(int vOrigIndex, int vDestIndex)
+double Graph<T>::edgeCost(int vOrigIndex, int vDestIndex)
 {
 	if(vertexSet[vOrigIndex] == vertexSet[vDestIndex])
 		return 0;
@@ -623,7 +623,7 @@ int Graph<T>::edgeCost(int vOrigIndex, int vDestIndex)
 }
 
 template<class T>
-int Graph<T>::nodeDistance(int vOrigIndex, int vDestIndex) {
+double Graph<T>::nodeDistance(int vOrigIndex, int vDestIndex) {
 
 	if(vOrigIndex == INT_INFINITY || vDestIndex == INT_INFINITY)
 		return INT_INFINITY;

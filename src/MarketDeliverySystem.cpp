@@ -43,12 +43,13 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 
 	while (getline(edges, line)) {
 		stringstream linestream(line);
-		int node1, node2, weight;
+		int node1, node2;
+		double weight;
 
 		linestream >> node1 >> node2 >> weight;
 		graph.addEdge(edgeID++, node1, node2, weight);
 		//TODO: Lel choose another way to input random two way streets
-		if(edgeID % 8 == 0)
+	//	if(edgeID % 8 == 0)
 			graph.addEdge(edgeID++, node2, node1, weight);
 	}
 
@@ -125,6 +126,7 @@ void MarketDeliverySystem::graphInfoToGV() {
 
 	gv->createWindow(GV_WINDOW_WIDTH, GV_WINDOW_HEIGHT);
 
+	gv->setBackground("Esposende.png");
 	//For default nodes
 	gv->defineVertexColor("blue");
 	gv->defineEdgeColor("black");
@@ -216,13 +218,13 @@ void MarketDeliverySystem::highlightPath(vector<unsigned int> path, string color
 
 int MarketDeliverySystem::getClosestHouse(int id) {
 
-	unsigned int lowestWeight = INT_INFINITY;
+	double lowestWeight = INT_INFINITY;
 	int resultId = -1;
 	//cout << "Source id = " << id << endl;
 
 	for(unsigned i = 0; i < clients.size(); i++) {
 		unsigned int currentId = clients[i];
-		unsigned int currentWeight = graph.nodeDistance(id, currentId);
+		double currentWeight = graph.nodeDistance(id, currentId);
 
 		bool currentVisited = graph.getVertex(currentId)->getInfoV().getDelivered();
 		//cout << "Current ID : " << currentId << " cost : " << currentWeight << " visited : " << currentVisited << endl;
@@ -243,7 +245,7 @@ int MarketDeliverySystem::getClosestHouse(int id) {
 }
 
 int MarketDeliverySystem::getClosestHouseFromSameMarket(int id) {
-	unsigned int lowestWeight = INT_INFINITY;
+	double lowestWeight = INT_INFINITY;
 	int resultId = -1;
 
 	unsigned int originMarket = graph.getVertex(id)->getInfoV().getSupermarket();
@@ -251,7 +253,7 @@ int MarketDeliverySystem::getClosestHouseFromSameMarket(int id) {
 
 	for(unsigned i = 0; i < clients.size(); i++) {
 		unsigned int currentId = clients[i];
-		int currentWeight = graph.nodeDistance(id, currentId);
+		double currentWeight = graph.nodeDistance(id, currentId);
 
 		unsigned int currentMarket = graph.getVertex(currentId)->getInfoV().getSupermarket();
 		if(currentMarket != originMarket)
