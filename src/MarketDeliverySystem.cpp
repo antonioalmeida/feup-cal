@@ -55,17 +55,21 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 		exit(1);   // call system to stop
 	}
 
+	int coisas = 0;
+
 	while (getline(edges, line)) {
 		stringstream linestream(line);
 		int node1, node2, weight;
 
 		linestream >> node1 >> node2 >> weight;
-		graph.addEdge(node1, node2, weight);
-		graph.addEdge(node2, node1, weight);
+		graph.addEdge(coisas, node1, node2, weight);
+		coisas++;
+		graph.addEdge(coisas, node2, node1, weight);
+		coisas++;
 	}
 
 	graph.floydWarshallShortestPath();
-
+	/*
 	//Testing closestHouse
 	unsigned int test = getClosestHouse(15);
 	cout << "Closest house " << test << endl;
@@ -80,11 +84,13 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 
 	cout << ss.str() << endl;
 	resetVisited();
-/*
+	 */
+	/*
 	//Testing singleMarketTruckPaths
 	resetVisited();
+	algorithm1.clear();
 	vector<vector <unsigned int>> result = singleMarketTruckPaths(0);
-
+	algorithm1=result;
 
 	for(int i = 0; i < result.size(); i++) {
 		stringstream ss2;
@@ -95,8 +101,8 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 
 		cout << ss2.str() << endl;
 	}
-*/
-/*
+	 */
+	/*
 	//Testing truckPathMultipleMarkets
 	attributeMarkets();
 	cout << "hello bitches" << endl;
@@ -118,12 +124,14 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 	}
 
 	cout << ss4.str() << endl;
-	*/
+	 */
+
 	//Testing multipleMarketsAllPaths
 	resetVisited();
 	attributeMarkets();
+	algorithm1.clear();
 	vector<vector <unsigned int>> result = multipleMarketsAllPaths();
-
+	algorithm1 = result;
 	for(int i = 0; i < result.size(); i++) {
 		stringstream ss5;
 		ss5.str("");
@@ -183,13 +191,84 @@ void MarketDeliverySystem::graphInfoToGV() {
 			int indexEdge = graph.getIndex(adjEdges[j].getDest());
 			if (indexEdge == -1)
 				break;
-			gv->addEdge(counter, i, indexEdge, EdgeType::UNDIRECTED);
-			counter++;
-		}
+			gv->addEdge(adjEdges[j].getID(), i, indexEdge, EdgeType::UNDIRECTED);
+
+			stringstream cenas;
+			cenas << adjEdges[j].getID();
+
+			gv->setEdgeLabel(adjEdges[j].getID(), cenas.str());
+			counter++;		}
 	}
+
+	for(int i=0; i < algorithm1.size(); i++){
+		if(i==3)
+			highlightPath(algorithm1[i], "CYAN", 5);
+		if(i==4)
+			highlightPath(algorithm1[i], "LIGHT_GRAY", 5);
+		if(i==5)
+			highlightPath(algorithm1[i], "pink", 5);
+		if(i==1)
+			highlightPath(algorithm1[i], "GREEN", 5);
+		if(i==2)
+			highlightPath(algorithm1[i], "DARK_GRAY", 5);
+		if(i==0)
+			highlightPath(algorithm1[i], "ORANGE", 5);
+
+		if(i >5)
+			highlightPath(algorithm1[i], "yellow", 5);
+
+	}
+
+
 
 	gv->rearrange();
 }
+
+int MarketDeliverySystem::highlightNode(int id, string color) {
+	if (id < 0 || id > graph.getNumVertex()) {
+		return -1;
+	} else {
+		gv->setVertexColor(id, color);
+		updateMap();
+		return 1;
+	}
+}
+
+int MarketDeliverySystem::highlightEdge(int id, string color, int thickness) {
+	if (id < 0 )//|| id > graph.getNumEdge())
+	{
+		return -1;
+	} else {
+		gv->setEdgeColor(id, color);
+		gv->setEdgeThickness(id, thickness);
+		updateMap();
+		return 1;
+	}
+}
+
+void MarketDeliverySystem::highlightPath(vector<unsigned int> path, string color, int thickness) {
+	vector<unsigned> graphPath = path;
+	unsigned nodeID;
+
+	for (unsigned int i = 0; i < graphPath.size(); i++) {
+		nodeID = graph.getIndex(graph.getVertex(graphPath[i]));
+
+		if (graph.getVertex(graphPath[i])->getInfoV().getType() == "supermarket")
+			highlightNode(nodeID, color);
+
+		if (i + 1 < graphPath.size()) {
+			vector<Edge<unsigned> > adj = graph.getVertex(graphPath[i])->getAdj();
+
+			for (unsigned int j = 0; j < adj.size(); j++) {
+				if (adj[j].getDest()->getInfo() == graph.getVertex(graphPath[i + 1])->getInfo()) {
+					highlightEdge(adj[j].getID(), color,thickness);
+					break;
+				}
+			}
+		}
+	}
+}
+
 
 int MarketDeliverySystem::getClosestHouse(int id) {
 

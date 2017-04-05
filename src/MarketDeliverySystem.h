@@ -39,6 +39,9 @@ private:
 	vector<unsigned int> supermarkets;
 	vector<unsigned int> clients;
 
+	vector<vector <unsigned int>> algorithm1;
+
+
 public:
 	MarketDeliverySystem();
 	MarketDeliverySystem(string &nodesFile, string &edgesFile);
@@ -46,6 +49,10 @@ public:
 
 	void updateMap();
 	void eraseMap();
+
+	int highlightNode(int id, string color);
+	int highlightEdge(int id, string color, int thickness);
+	void highlightPath(vector<unsigned int>path, string color, int thickness);
 
 	void graphInfoToGV();
 
