@@ -11,10 +11,9 @@
 #include <stddef.h>
 #include <iostream>
 #include "InfoVertex.h"
+#include "Utils.h"
 
 using namespace std;
-
-#define INT_INFINITY 999999
 
 template <class T> class Edge;
 template <class T> class Graph;
@@ -77,7 +76,6 @@ bool Vertex<T>::removeEdgeTo(Vertex<T> *d) {
 
 template <class T>
 Vertex<T>::Vertex(T in, InfoVertex extraIn): info(in), infoV(extraIn), visited(false), indegree(0), processing(false), dist(0), path(0) {}
-
 
 template <class T>
 void Vertex<T>::addEdge(int ID, Vertex<T> *dest, double w) {
@@ -289,9 +287,6 @@ bool Graph<T>::removeEdge(const T &sourc, const T &dest) {
 		return false;
 }
 
-
-
-
 template <class T>
 vector<T> Graph<T>::dfs() const {
 	typename vector<Vertex<T>*>::const_iterator it= vertexSet.begin();
@@ -418,7 +413,7 @@ vector<Vertex<T>*> Graph<T>::getSources() const{
 	return result;
 }
 
-/*
+
 template <class T>
 void Graph<T>::resetIndegrees(){
 	typename vector<Vertex<T>*>::iterator it = vertexSet.begin();
@@ -426,13 +421,12 @@ void Graph<T>::resetIndegrees(){
 	for(;it != ite; it++)
 		(*it)->indegree = 0;
 	for(it = vertexSet.begin(); it != ite; it++){
-		typename vector<Edge<T>>::iterator ita = (*it)->adj.begin();
-		typename vector<Edge<T>>::iterator itae = (*it)->adj.end();
+		typename vector<Edge<T> >::iterator ita = (*it)->adj.begin();
+		typename vector<Edge<T> >::iterator itae = (*it)->adj.end();
 		for(; ita != itae; ita++)
 			ita->dest->incIndegree();
 	}
 }
- */
 
 template <class T>
 bool Graph<T>::isDAG(){
@@ -575,7 +569,6 @@ vector<T> Graph<T>::getfloydWarshallPath(const T &origin, const T &dest){
 			break;
 	}
 
-
 	vector<T> res;
 
 	//se nao foi encontrada solucao possivel, retorna lista vazia
@@ -598,11 +591,8 @@ vector<T> Graph<T>::getfloydWarshallPath(const T &origin, const T &dest){
 
 	res.push_back(vertexSet[destinationIndex]->info);
 
-
 	return res;
 }
-
-
 
 template<class T>
 void Graph<T>::getfloydWarshallPathAux(int index1, int index2, vector<T> & res)

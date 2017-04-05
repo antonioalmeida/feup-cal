@@ -1,10 +1,3 @@
-/*
- * InfoVertex.cpp
- *
- *  Created on: 29/03/2017
- *      Author: Torres
- */
-
 #include "InfoVertex.h"
 
 #define INT_INFINITY 999999
@@ -20,7 +13,6 @@ InfoVertex::InfoVertex(double x, double y, string type) {
 }
 
 InfoVertex::~InfoVertex() {
-	// TODO Auto-generated destructor stub
 }
 
 string InfoVertex::getType() {

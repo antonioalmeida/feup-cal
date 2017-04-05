@@ -1,10 +1,3 @@
-/*
- * MarketDeliverySystem.cpp
- *
- *  Created on: 22/03/2017
- *      Author: darksystem
- */
-
 #include "MarketDeliverySystem.h"
 
 MarketDeliverySystem::MarketDeliverySystem() {
@@ -14,7 +7,7 @@ MarketDeliverySystem::MarketDeliverySystem() {
 
 MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile) {
 	gv = NULL;
-
+	fillColorMap();
 	ifstream nodes, edges;
 	string line;
 
@@ -60,6 +53,7 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 	}
 
 	graph.floydWarshallShortestPath();
+
 	/*
 	//Testing closestHouse
 	unsigned int test = getClosestHouse(15);
@@ -101,6 +95,18 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 	 */
 }
 
+void MarketDeliverySystem::fillColorMap(){
+	color.insert(pair<int,string>(0, "ORANGE"));
+	color.insert(pair<int,string>(1, "YELLOW"));
+	color.insert(pair<int,string>(2, "GREEN"));
+	color.insert(pair<int,string>(3, "CYAN"));
+	color.insert(pair<int,string>(4, "GRAY"));
+	color.insert(pair<int,string>(5, "DARK_GRAY"));
+	color.insert(pair<int,string>(6, "LIGHT_GRAY"));
+	color.insert(pair<int,string>(7, "MAGENTA"));
+	color.insert(pair<int,string>(8, "PINK"));
+};
+
 void MarketDeliverySystem::setTruckCapacity(int newCapacity){
 	TRUCK_CAPACITY = newCapacity;
 }
@@ -137,8 +143,6 @@ void MarketDeliverySystem::graphInfoToGV() {
 		}
 	}
 
-	int counter = 0;
-
 	for (int i = 0; i < graph.getNumVertex(); i++) {
 		vector<Edge<unsigned int> > adjEdges = vertex[i]->getAdj();
 
@@ -151,31 +155,15 @@ void MarketDeliverySystem::graphInfoToGV() {
 			// \/ Shit. Text is too small
 			//gv->setEdgeWeight(adjEdges[j].getID(), adjEdges[j].getWeight());
 
-			stringstream cenas;
-			cenas << adjEdges[j].getID();
+			stringstream idEdge;
+			idEdge << adjEdges[j].getID();
 
-			gv->setEdgeLabel(adjEdges[j].getID(), cenas.str());
-			counter++;
+			gv->setEdgeLabel(adjEdges[j].getID(), idEdge.str());
 		}
 	}
 
-	for(unsigned i=0; i < algorithm1.size(); i++){
-		if(i==3)
-			highlightPath(algorithm1[i], "CYAN", 5);
-		if(i==4)
-			highlightPath(algorithm1[i], "LIGHT_GRAY", 5);
-		if(i==5)
-			highlightPath(algorithm1[i], "pink", 5);
-		if(i==1)
-			highlightPath(algorithm1[i], "GREEN", 5);
-		if(i==2)
-			highlightPath(algorithm1[i], "DARK_GRAY", 5);
-		if(i==0)
-			highlightPath(algorithm1[i], "ORANGE", 5);
-
-		if(i >5)
-			highlightPath(algorithm1[i], "yellow", 5);
-
+	for(unsigned i=0; i < algorithm.size(); i++){
+		highlightPath(algorithm[i], color[i%8], 5);
 	}
 
 	redrawWindow();
@@ -192,8 +180,7 @@ int MarketDeliverySystem::highlightNode(int id, string color) {
 }
 
 int MarketDeliverySystem::highlightEdge(int id, string color, int thickness) {
-	if (id < 0 )//|| id > graph.getNumEdge())
-	{
+	if (id < 0 )/*|| id > graph.getNumEdge()) */{
 		return -1;
 	} else {
 		gv->setEdgeColor(id, color);
@@ -210,7 +197,7 @@ void MarketDeliverySystem::highlightPath(vector<unsigned int> path, string color
 	for (unsigned int i = 0; i < graphPath.size(); i++) {
 		nodeID = graph.getIndex(graph.getVertex(graphPath[i]));
 
-		if (graph.getVertex(graphPath[i])->getInfoV().getType() == "supermarket")
+		if (graph.getVertex(graphPath[i])->getInfoV().getType() == "supermarket" && nodeID == path[0])
 			highlightNode(nodeID, color);
 
 		if (i + 1 < graphPath.size()) {
@@ -235,7 +222,7 @@ int MarketDeliverySystem::getClosestHouse(int id) {
 
 	for(unsigned i = 0; i < clients.size(); i++) {
 		unsigned int currentId = clients[i];
-		int currentWeight = graph.nodeDistance(id, currentId);
+		unsigned int currentWeight = graph.nodeDistance(id, currentId);
 
 		bool currentVisited = graph.getVertex(currentId)->getInfoV().getDelivered();
 		//cout << "Current ID : " << currentId << " cost : " << currentWeight << " visited : " << currentVisited << endl;
@@ -286,7 +273,6 @@ int MarketDeliverySystem::getClosestHouseFromSameMarket(int id) {
 		return -1;
 
 	return resultId;
-
 }
 
 vector<unsigned int> MarketDeliverySystem::truckPath(int originId) {
@@ -316,9 +302,9 @@ vector<unsigned int> MarketDeliverySystem::truckPath(int originId) {
 	return path;
 }
 
-vector<vector<unsigned int>> MarketDeliverySystem::singleMarketTruckPaths(int originId) {
+vector<vector<unsigned int> > MarketDeliverySystem::singleMarketTruckPaths(int originId) {
 
-	vector<vector<unsigned int>> pathsMatrix;
+	vector<vector<unsigned int> > pathsMatrix;
 
 	int currentId = originId;
 
@@ -405,9 +391,9 @@ vector<unsigned int> MarketDeliverySystem::multipleMarketsTruckPath(int originId
 	return path;
 }
 
-vector<vector<unsigned int>> MarketDeliverySystem::multipleMarketsAllPaths() {
+vector<vector<unsigned int> > MarketDeliverySystem::multipleMarketsAllPaths() {
 
-	vector<vector<unsigned int>> pathsMatrix;
+	vector<vector<unsigned int> > pathsMatrix;
 
 	for(unsigned i = 0; i < supermarkets.size(); i++) {
 		cout << "0" << endl;
@@ -431,27 +417,27 @@ void MarketDeliverySystem::printClientsInformation() {
 }
 
 void MarketDeliverySystem::deliveryFromSingleSupermarket() {
-	int supermarketID;
+	unsigned int supermarketID;
 	cout << "Insert the supermarket to do the delivery from: ";
 	cin >> supermarketID;
 
 	bool found = false;
-	for(unsigned id : supermarkets){
-		if(id == supermarketID){
+	for(unsigned i=0; i<supermarkets.size(); i++){
+		if(supermarkets.at(i) == supermarketID){
 			found = true;
 			break;
 		}
 	}
+
 	if(!found)
 		throw InexistentSupermarket(supermarketID);
 
 
 	resetVisited();
-	algorithm1.clear();
-	vector<vector <unsigned int>> result = singleMarketTruckPaths(supermarketID);
-	algorithm1=result;
-
-	/*for(int i = 0; i < result.size(); i++) {
+	vector<vector <unsigned int> > result = singleMarketTruckPaths(supermarketID);
+	algorithm=result;
+	/*
+	for(int i = 0; i < result.size(); i++) {
 		stringstream ss2;
 		ss2.str("");
 		for(int j = 0; j < result[i].size(); j++) {
@@ -460,17 +446,15 @@ void MarketDeliverySystem::deliveryFromSingleSupermarket() {
 
 		cout << ss2.str() << endl;
 	}
-	*/
+	 */
+
 }
 
 void MarketDeliverySystem::deliveryFromEverySupermarket() {
 	resetVisited();
 	attributeMarkets();
-	algorithm1.clear();
-
-	vector<vector <unsigned int>> result = multipleMarketsAllPaths();
-
-	algorithm1 = result;
+	vector<vector <unsigned int> > result = multipleMarketsAllPaths();
+	algorithm = result;
 	/*for(unsigned int i = 0; i < result.size(); i++) {
 		stringstream ss5;
 		ss5.str("");
@@ -483,10 +467,3 @@ void MarketDeliverySystem::deliveryFromEverySupermarket() {
 
 	printClientsInformation();
 }
-
-
-
-
-
-
-

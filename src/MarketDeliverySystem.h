@@ -20,6 +20,12 @@ const int DEFAULT_EDGE_THICKNESS = 1;
 const int GV_WINDOW_WIDTH = 1600;
 const int GV_WINDOW_HEIGHT = 700;
 
+
+
+static map<int,string> color;
+
+
+
 class MarketDeliverySystem {
 private:
 	int TRUCK_CAPACITY;
@@ -29,8 +35,8 @@ private:
 	vector<unsigned int> supermarkets;
 	vector<unsigned int> clients;
 
-	vector<vector <unsigned int>> algorithm1;
-
+	vector<vector <unsigned int> > algorithm;
+	map<int,string> color;
 
 public:
 	MarketDeliverySystem();
@@ -45,13 +51,13 @@ public:
 	int highlightNode(int id, string color);
 	int highlightEdge(int id, string color, int thickness);
 	void highlightPath(vector<unsigned int>path, string color, int thickness);
-
+	void fillColorMap();
 	void graphInfoToGV();
 
 	int getClosestHouse(int id);
 	int getClosestHouseFromSameMarket(int id);
 	vector<unsigned int> truckPath(int originId);
-	vector<vector<unsigned int>> singleMarketTruckPaths(int originId);
+	vector<vector<unsigned int> > singleMarketTruckPaths(int originId);
 	void resetVisited();
 	int getUnvisitedHouse();
 
@@ -59,7 +65,7 @@ public:
 	void setHouseMarket(unsigned int id, unsigned int marketId);
 	void attributeMarkets();
 	vector<unsigned int> multipleMarketsTruckPath(int originId);
-	vector<vector<unsigned int>> multipleMarketsAllPaths();
+	vector<vector<unsigned int> > multipleMarketsAllPaths();
 
 	void printClientsInformation();
 

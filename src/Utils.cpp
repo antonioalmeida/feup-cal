@@ -4,8 +4,6 @@
 
 using namespace std;
 
-
-
 void clearScreen() {
 	for (unsigned int i = 0; i < WINDOW_SIZE; i++)
 		cout << endl;

@@ -1,10 +1,3 @@
-/*
- * InfoVertex.h
- *
- *  Created on: 29/03/2017
- *      Author: Torres
- */
-
 #ifndef SRC_INFOVERTEX_H_
 #define SRC_INFOVERTEX_H_
 
