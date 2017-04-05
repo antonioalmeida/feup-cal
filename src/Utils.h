@@ -3,13 +3,12 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
-#include "Graph.h"
-
-using namespace std;
+#include <fstream>
 
 #define WINDOW_SIZE 24
 #define TAB_BIG "                        "
 #define TAB	"     "
+#define INT_INFINITY 999999
 
 
 //! Ensures user's input is a number between two numbers given by arguments
@@ -36,6 +35,8 @@ void deleteWhitespace(std::string &s);
  */
 void pressToContinue();
 
+void start(std::string &nodesFile, std::string &edgesFile);
+
 class InexistentFile {
 protected:
 	std::string filename;
@@ -45,5 +46,17 @@ public:
 	}
 	std::string getFilename() const {
 		return filename;
+	}
+};
+
+class InexistentSupermarket {
+protected:
+	unsigned supermarketID;
+public:
+	InexistentSupermarket(unsigned idNotFound) {
+		supermarketID = idNotFound;
+	}
+	unsigned getID() {
+		return supermarketID;
 	}
 };

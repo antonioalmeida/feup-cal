@@ -7,9 +7,8 @@
 
 #include "MarketDeliverySystem.h"
 
-#define TRUCK_CAPACITY 10
-
 MarketDeliverySystem::MarketDeliverySystem() {
+	TRUCK_CAPACITY = 10;
 	gv = NULL;
 }
 
@@ -19,15 +18,12 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 	ifstream nodes, edges;
 	string line;
 
+	TRUCK_CAPACITY = 10;
+
 	unsigned int nodeID = 0;
 	unsigned int currentY, currentX;
 
 	nodes.open(nodesFile.c_str());
-
-	if (!nodes) {
-		cerr << "Unable to open file " << nodesFile << endl;
-		exit(1);   // call system to stop
-	}
 
 	while (getline(nodes, line)) {
 		stringstream linestream(line);
@@ -50,22 +46,17 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 
 	edges.open(edgesFile.c_str());
 
-	if (!edges) {
-		cerr << "Unable to open file " << edgesFile << endl;
-		exit(1);   // call system to stop
-	}
-
-	int coisas = 0;
+	int edgeID = 0;
 
 	while (getline(edges, line)) {
 		stringstream linestream(line);
 		int node1, node2, weight;
 
 		linestream >> node1 >> node2 >> weight;
-		graph.addEdge(coisas, node1, node2, weight);
-		coisas++;
-		graph.addEdge(coisas, node2, node1, weight);
-		coisas++;
+		graph.addEdge(edgeID++, node1, node2, weight);
+		//TODO: Lel choose another way to input random two way streets
+		if(edgeID % 8 == 0)
+			graph.addEdge(edgeID++, node2, node1, weight);
 	}
 
 	graph.floydWarshallShortestPath();
@@ -84,23 +75,6 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 
 	cout << ss.str() << endl;
 	resetVisited();
-	 */
-	/*
-	//Testing singleMarketTruckPaths
-	resetVisited();
-	algorithm1.clear();
-	vector<vector <unsigned int>> result = singleMarketTruckPaths(0);
-	algorithm1=result;
-
-	for(int i = 0; i < result.size(); i++) {
-		stringstream ss2;
-		ss2.str("");
-		for(int j = 0; j < result[i].size(); j++) {
-			ss2 << result[i][j] << " ";
-		}
-
-		cout << ss2.str() << endl;
-	}
 	 */
 	/*
 	//Testing truckPathMultipleMarkets
@@ -125,36 +99,17 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 
 	cout << ss4.str() << endl;
 	 */
-
-	//Testing multipleMarketsAllPaths
-	resetVisited();
-	attributeMarkets();
-	algorithm1.clear();
-	vector<vector <unsigned int>> result = multipleMarketsAllPaths();
-	algorithm1 = result;
-	for(int i = 0; i < result.size(); i++) {
-		stringstream ss5;
-		ss5.str("");
-		for(int j = 0; j < result[i].size(); j++) {
-			ss5 << result[i][j] << " ";
-		}
-
-		cout << ss5.str() << endl;
-	}
-
-	printClientsInformation();
 }
 
-MarketDeliverySystem::~MarketDeliverySystem() {
-	// TODO Auto-generated destructor stub
+void MarketDeliverySystem::setTruckCapacity(int newCapacity){
+	TRUCK_CAPACITY = newCapacity;
 }
 
-
-void MarketDeliverySystem::updateMap() {
+void MarketDeliverySystem::redrawWindow() {
 	gv->rearrange();
 }
 
-void MarketDeliverySystem::eraseMap() {
+void MarketDeliverySystem::closeWindow() {
 	gv->closeWindow();
 	gv = NULL;
 }
@@ -191,16 +146,20 @@ void MarketDeliverySystem::graphInfoToGV() {
 			int indexEdge = graph.getIndex(adjEdges[j].getDest());
 			if (indexEdge == -1)
 				break;
-			gv->addEdge(adjEdges[j].getID(), i, indexEdge, EdgeType::UNDIRECTED);
+			gv->addEdge(adjEdges[j].getID(), i, indexEdge, EdgeType::DIRECTED);
+
+			// \/ Shit. Text is too small
+			//gv->setEdgeWeight(adjEdges[j].getID(), adjEdges[j].getWeight());
 
 			stringstream cenas;
 			cenas << adjEdges[j].getID();
 
 			gv->setEdgeLabel(adjEdges[j].getID(), cenas.str());
-			counter++;		}
+			counter++;
+		}
 	}
 
-	for(int i=0; i < algorithm1.size(); i++){
+	for(unsigned i=0; i < algorithm1.size(); i++){
 		if(i==3)
 			highlightPath(algorithm1[i], "CYAN", 5);
 		if(i==4)
@@ -219,9 +178,7 @@ void MarketDeliverySystem::graphInfoToGV() {
 
 	}
 
-
-
-	gv->rearrange();
+	redrawWindow();
 }
 
 int MarketDeliverySystem::highlightNode(int id, string color) {
@@ -229,7 +186,7 @@ int MarketDeliverySystem::highlightNode(int id, string color) {
 		return -1;
 	} else {
 		gv->setVertexColor(id, color);
-		updateMap();
+		redrawWindow();
 		return 1;
 	}
 }
@@ -241,7 +198,7 @@ int MarketDeliverySystem::highlightEdge(int id, string color, int thickness) {
 	} else {
 		gv->setEdgeColor(id, color);
 		gv->setEdgeThickness(id, thickness);
-		updateMap();
+		redrawWindow();
 		return 1;
 	}
 }
@@ -276,7 +233,7 @@ int MarketDeliverySystem::getClosestHouse(int id) {
 	int resultId = -1;
 	//cout << "Source id = " << id << endl;
 
-	for(int i = 0; i < clients.size(); i++) {
+	for(unsigned i = 0; i < clients.size(); i++) {
 		unsigned int currentId = clients[i];
 		int currentWeight = graph.nodeDistance(id, currentId);
 
@@ -305,7 +262,7 @@ int MarketDeliverySystem::getClosestHouseFromSameMarket(int id) {
 	unsigned int originMarket = graph.getVertex(id)->getInfoV().getSupermarket();
 	//cout << "Source id = " << id << endl;
 
-	for(int i = 0; i < clients.size(); i++) {
+	for(unsigned i = 0; i < clients.size(); i++) {
 		unsigned int currentId = clients[i];
 		int currentWeight = graph.nodeDistance(id, currentId);
 
@@ -365,7 +322,6 @@ vector<vector<unsigned int>> MarketDeliverySystem::singleMarketTruckPaths(int or
 
 	int currentId = originId;
 
-	int index = 0;
 	while(true) {
 		cout << "0" << endl;
 		vector<unsigned int> currentPath = truckPath(currentId);
@@ -394,7 +350,7 @@ void MarketDeliverySystem::resetVisited() {
 }
 
 int MarketDeliverySystem::getUnvisitedHouse() {
-	for(int i = 0; i < clients.size(); i++) {
+	for(unsigned i = 0; i < clients.size(); i++) {
 		if(!graph.getVertex(clients[i])->getInfoV().getDelivered())
 			return clients[i];
 	}
@@ -411,14 +367,14 @@ void MarketDeliverySystem::setHouseMarket(unsigned int id, unsigned int marketId
 }
 
 void MarketDeliverySystem::attributeMarkets() {
-	for(int i = 0; i < clients.size(); i++) {
-		for(int j = 0; j < supermarkets.size(); j++) {
+	for(unsigned i = 0; i < clients.size(); i++) {
+		for(unsigned j = 0; j < supermarkets.size(); j++) {
 			if(graph.nodeDistance(supermarkets[j], clients[i]) < graph.nodeDistance(graph.getVertex(clients[i])->getInfoV().getSupermarket(), clients[i]))
 				setHouseMarket(clients[i], supermarkets[j]);
 		}
 	}
 
-	for(int i = 0; i < supermarkets.size(); i++)
+	for(unsigned i = 0; i < supermarkets.size(); i++)
 		setHouseMarket(supermarkets[i], supermarkets[i]);
 }
 
@@ -453,7 +409,7 @@ vector<vector<unsigned int>> MarketDeliverySystem::multipleMarketsAllPaths() {
 
 	vector<vector<unsigned int>> pathsMatrix;
 
-	for(int i = 0; i < supermarkets.size(); i++) {
+	for(unsigned i = 0; i < supermarkets.size(); i++) {
 		cout << "0" << endl;
 		vector<unsigned int> currentPath = multipleMarketsTruckPath(supermarkets[i]);
 		cout << "1" << endl;
@@ -466,12 +422,66 @@ vector<vector<unsigned int>> MarketDeliverySystem::multipleMarketsAllPaths() {
 
 
 void MarketDeliverySystem::printClientsInformation() {
-	for(int i = 0; i < clients.size(); i++) {
+	for(unsigned i = 0; i < clients.size(); i++) {
 		unsigned int market = graph.getVertex(clients[i])->getInfoV().getSupermarket();
 		bool status = graph.getVertex(clients[i])->getInfoV().getDelivered();
 
 		cout << "Client ID : " << clients[i] << ", Market : " << market << ", Status : " << (status ? "DELIVERED" : "NOT DELIVERED") << endl;
 	}
+}
+
+void MarketDeliverySystem::deliveryFromSingleSupermarket() {
+	int supermarketID;
+	cout << "Insert the supermarket to do the delivery from: ";
+	cin >> supermarketID;
+
+	bool found = false;
+	for(unsigned id : supermarkets){
+		if(id == supermarketID){
+			found = true;
+			break;
+		}
+	}
+	if(!found)
+		throw InexistentSupermarket(supermarketID);
+
+
+	resetVisited();
+	algorithm1.clear();
+	vector<vector <unsigned int>> result = singleMarketTruckPaths(supermarketID);
+	algorithm1=result;
+
+	/*for(int i = 0; i < result.size(); i++) {
+		stringstream ss2;
+		ss2.str("");
+		for(int j = 0; j < result[i].size(); j++) {
+			ss2 << result[i][j] << " ";
+		}
+
+		cout << ss2.str() << endl;
+	}
+	*/
+}
+
+void MarketDeliverySystem::deliveryFromEverySupermarket() {
+	resetVisited();
+	attributeMarkets();
+	algorithm1.clear();
+
+	vector<vector <unsigned int>> result = multipleMarketsAllPaths();
+
+	algorithm1 = result;
+	/*for(unsigned int i = 0; i < result.size(); i++) {
+		stringstream ss5;
+		ss5.str("");
+		for(unsigned j = 0; j < result[i].size(); j++) {
+			ss5 << result[i][j] << " ";
+		}
+
+		cout << ss5.str() << endl;
+	}*/
+
+	printClientsInformation();
 }
 
 

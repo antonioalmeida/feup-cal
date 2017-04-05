@@ -2,31 +2,6 @@
 
 using namespace std;
 
-void start(string &nodesFile, string &edgesFile) {
-	cout << "Insert the city name: " << endl;
-	string map;
-	getline(cin, map);
-
-	edgesFile = map + "Edges.txt";
-	nodesFile = map + "Nodes.txt";
-	ifstream edgesTestFile;
-	edgesTestFile.open(edgesFile.c_str());
-	if (!edgesTestFile.is_open())
-		throw InexistentFile(edgesFile);
-
-	ifstream nodesTestFile;
-	nodesTestFile.open(nodesFile.c_str());
-	if (!nodesTestFile.is_open())
-		throw InexistentFile(nodesFile);
-
-	//No failure in opening = good to go.
-	//Close temporary files to avoid unwanted trouble
-	edgesTestFile.close();
-	nodesTestFile.close();
-
-}
-
-
 /******************************************
  * Main Menu
  ******************************************/
@@ -35,12 +10,12 @@ unsigned short int mainMenu() {
 	unsigned short int option;
 	clearScreen();
 	cout << endl;
-	cout << TAB_BIG << "----------------------" << endl;
-	cout << TAB_BIG << "---Super Market Network---" << endl;
-	cout << TAB_BIG << "----------------------" << endl;
-	cout << TAB << "1 - SuperMarket menu" << endl;
-	cout << TAB << "2 - Distribution menu" << endl;
-	cout << TAB << "3 - GraphViewer settings menu" << endl;
+	cout << TAB_BIG << "------------------------------------" << endl;
+	cout << TAB_BIG << "---Super Market Network Main Menu---" << endl;
+	cout << TAB_BIG << "------------------------------------" << endl;
+	cout << TAB << "1 - Network map settings menu" << endl;
+	cout << TAB << "2 - Distribution options menu" << endl;
+	cout << TAB << "3 - View latest calculated paths" << endl;
 	cout << TAB << "0 - Exit" << endl << endl;
 	cout << TAB << "Enter your option: ";
 	option = readOp(0, 3);
@@ -53,64 +28,57 @@ void mainOption(MarketDeliverySystem &smn) {
 
 	while ((option = mainMenu())) {
 		switch (option) {
-		case 1: superMarketOptions(smn);
+		case 1:
+			networkSettingsOptions(smn);
 			break;
-		case 2: distributionOptions(smn);
+		case 2:
+			distributionOptions(smn);
 			break;
-		case 3:
+		case 3:{
 			smn.graphInfoToGV();
-			//graphOptions(smn);
+			pressToContinue();
+			smn.closeWindow();
 			break;
 		}
 		pressToContinue();
+		}
 	}
-
-	//smn.save();
 }
 
 /******************************************
- * Super Market Menu
+ * Network Settings Menu
  ******************************************/
 
-unsigned short int superMarketMenu() {
+unsigned short int networkSettingsMenu() {
 	unsigned short int option;
 
 	clearScreen();
 	cout << endl;
 	cout << TAB_BIG << "----------------------" << endl;
-	cout << TAB_BIG << "---Super Market Main Menu---" << endl;
+	cout << TAB_BIG << "---Network Settings Main Menu---" << endl;
 	cout << TAB_BIG << "----------------------" << endl;
-	cout << endl;
-	cout << TAB << "1 - Create SuperMarket" << endl;
-	cout << TAB << "2 - Remove SuperMarket" << endl;
-	cout << TAB << "3 - Edit a SuperMarket's fleet" << endl;
-	cout << TAB << "4 - List SuperMarkets" << endl;
+	cout << TAB << "1 - Alter truck" << endl;
+	//TODO: ADD MORE CUSTOMIZATION OPTIONS?
 	cout << TAB << "0 - Return to Main Menu" << endl << endl;
 	cout << TAB << "Enter your option: ";
-	option = readOp(0, 4);
+	option = readOp(0, 1);
 
 	return option;
 }
 
 
-void superMarketOptions(MarketDeliverySystem &smn) {
+void networkSettingsOptions(MarketDeliverySystem &smn) {
 	unsigned int option;
 
-	while ((option = superMarketMenu())) {
+	while ((option = networkSettingsMenu())) {
 		switch (option) {
-		case 1:
-			//ADD SUPERMARKET FUNCTION
-			break;
-		case 2: {
-			//REMOVE SUPERMARKET FUNCTION
+		case 1:{
+			int newCapacity;
+			cout << "Insert the new capacity for the trucks used: ";
+			cin >> newCapacity;
+			smn.setTruckCapacity(newCapacity);
 			break;
 		}
-		case 3:
-			//EDIT SUPERMARKET FLEET FUNCTION
-			//NOTE: Insert a minimum limit of 1? (so it can be chosen for the single origin distribution and assure 'realistically' it can be used in multi-origin distribution)
-		case 4:
-			//LIST SUPERMARKETS FUNCTION
-			break;
 		}
 		pressToContinue();
 	}
@@ -131,10 +99,9 @@ unsigned short int distributionMenu() {
 	cout << endl;
 	cout << TAB << "1 - Find delivery path: Trucks start in a single SuperMarket" << endl;
 	cout << TAB << "2 - Find delivery path: Each SuperMarket sends his own truck" << endl;
-	cout << TAB << "3 - Show latest delivery path calculated" << endl;
 	cout << TAB << "0 - Return to Main Menu" << endl << endl;
 	cout << TAB << "Enter your option: ";
-	option = readOp(0, 3);
+	option = readOp(0, 2);
 
 	return option;
 }
@@ -146,59 +113,17 @@ void distributionOptions(MarketDeliverySystem & smn) {
 	while ((option = distributionMenu())) {
 		switch (option) {
 		case 1:
-			//SINGLE SUPERMARKET DISTRIBUTION FUNCTION
+			try{
+				smn.deliveryFromSingleSupermarket();
+			}
+			catch(InexistentSupermarket &s){
+				cout << "ERROR: No supermarket identified by ID " << s.getID() << "!" << endl;
+			}
 			break;
 		case 2:
-			//MULTIPLE SUPERMARKET DISTRIBUTION FUNCTION
-			break;
-		case 3:
-			//SHOW LATEST CALCULATED PATH
-			//NOTE: CONSIDER TWO WAYS OF SHOWING IT? (ON CONSOLE AND ON GRAPHVIEWER)
+			smn.deliveryFromEverySupermarket();
 			break;
 		}
 		pressToContinue();
 	}
-}
-
-/* DIDN'T CHANGE BELOW THIS LINE... BUT IT SEEMS LIKE UNECESSARY WORK IMO */
-
-
-/******************************************
- * GraphViewer Menu
- ******************************************/
-
-unsigned short int graphViewerMenu() {
-	unsigned short int option;
-
-	clearScreen();
-	cout << endl;
-	cout << TAB_BIG << "----------------------" << endl;
-	cout << TAB_BIG << "---GraphViewer Main Menu---" << endl;
-	cout << TAB_BIG << "----------------------" << endl;
-	cout << endl;
-	cout << TAB << "1 - Show Graph" << endl;
-	cout << TAB << "2 - Edit Settings" << endl;
-	cout << TAB << "0 - Return to Main Menu" << endl << endl;
-	cout << TAB << "Enter your option: ";
-	option = readOp(0, 2);
-
-	return option;
-}
-
-
-void graphViewerOptions(MarketDeliverySystem & smn) {
-	unsigned int option;
-
-	while ((option = graphViewerMenu()))
-		switch (option) {
-		case 1:
-			smn.graphInfoToGV();
-			//smn.showGraph();
-			pressToContinue();
-			break;
-		case 2:
-			//smn.editGraph();
-			pressToContinue();
-			break;
-		}
 }

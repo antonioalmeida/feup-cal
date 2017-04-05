@@ -1,6 +1,4 @@
-
-#ifndef SRC_MarketDeliverySystem_H_
-#define SRC_MarketDeliverySystem_H_
+#pragma once
 
 #include <float.h>
 #include <algorithm>
@@ -9,7 +7,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <math.h>
 #include <map>
 #include "InfoVertex.h"
 #include "Graph.h"
@@ -17,22 +14,15 @@
 #include "Utils.h"
 
 
-#define EDGE_THICKNESS 10
-#define DEFAULT_EDGE_THICKNESS 1
+const int EDGE_THICKNESS = 10;
+const int DEFAULT_EDGE_THICKNESS = 1;
 
-#define GV_WINDOW_WIDTH 1600 	// graph viewer x resolution
-#define GV_WINDOW_HEIGHT 700	// gv y resolution
-
-#define INT_INFINITY 999999
-
-/**
- * Stores in a LimitCoords struct the max coordinate values of map graph g
- */
-
-#endif /* SRC_MarketDeliverySystem_H_ */
+const int GV_WINDOW_WIDTH = 1600;
+const int GV_WINDOW_HEIGHT = 700;
 
 class MarketDeliverySystem {
 private:
+	int TRUCK_CAPACITY;
 	Graph<unsigned int> graph;
 	GraphViewer *gv;
 
@@ -45,10 +35,12 @@ private:
 public:
 	MarketDeliverySystem();
 	MarketDeliverySystem(string &nodesFile, string &edgesFile);
-	virtual ~MarketDeliverySystem();
+	virtual ~MarketDeliverySystem() {if(gv != NULL) delete gv;};
 
-	void updateMap();
-	void eraseMap();
+	void setTruckCapacity(int newCapacity);
+
+	void redrawWindow();
+	void closeWindow();
 
 	int highlightNode(int id, string color);
 	int highlightEdge(int id, string color, int thickness);
@@ -70,5 +62,8 @@ public:
 	vector<vector<unsigned int>> multipleMarketsAllPaths();
 
 	void printClientsInformation();
+
+	void deliveryFromSingleSupermarket();
+	void deliveryFromEverySupermarket();
 };
 

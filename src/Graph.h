@@ -24,14 +24,14 @@ class Vertex {
 private:
 	T info;
 	vector<Edge<T>  > adj;
+	InfoVertex infoV;
+	int indegree;
 	bool visited;
 	bool processing;
 	void addEdge(int ID, Vertex<T> *dest, double w);
 	bool removeEdgeTo(Vertex<T> *d);
-	int indegree;
 	int dist;
 	Vertex<T>* path;
-	InfoVertex infoV;
 public:
 	int getIndegree() const;
 	vector<Edge<T> > getAdj(){return adj;};
@@ -119,13 +119,14 @@ public:
 	Edge(int ID, Vertex<T> *d, double w);
 	Edge(Vertex<T> *d, double w);
 	Vertex<T> * getDest() {return dest;};
+	double getWeight() {return weight;};
 	int getID(){return ID;};
 	friend class Graph<T>;
 	friend class Vertex<T>;
 };
 
 template <class T>
-Edge<T>::Edge(Vertex<T> *d, double w): dest(d), weight(w){}
+Edge<T>::Edge(Vertex<T> *d, double w): dest(d), weight(w), ID(-1){}
 
 template <class T>
 Edge<T>::Edge(int ID, Vertex<T> *d, double w): ID(ID), dest(d), weight(w){}

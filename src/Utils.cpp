@@ -20,15 +20,6 @@ void pressToContinue() {
 
 }
 
-void deleteWhitespace(string &s) {
-	while (s.find("  ") != string::npos)
-		s.erase(s.find("  "), 1);
-	if (s[0] == ' ')
-		s.erase(0, 1);
-	if (s[s.length() - 1] == ' ')
-		s.erase(s.length() - 1, 1);
-}
-
 unsigned short int readOp(unsigned short int minValue, unsigned short int  maxValue) {
 	unsigned short int number;
 	do {
@@ -41,4 +32,27 @@ unsigned short int readOp(unsigned short int minValue, unsigned short int  maxVa
 	} while (number < minValue || number > maxValue);
 
 	return number;
+}
+
+void start(string &nodesFile, string &edgesFile) {
+	cout << "Insert the city name: " << endl;
+	string map;
+	getline(cin, map);
+
+	edgesFile = map + "Edges.txt";
+	nodesFile = map + "Nodes.txt";
+	ifstream edgesTestFile;
+	edgesTestFile.open(edgesFile.c_str());
+	if (!edgesTestFile.is_open())
+		throw InexistentFile(edgesFile);
+
+	ifstream nodesTestFile;
+	nodesTestFile.open(nodesFile.c_str());
+	if (!nodesTestFile.is_open())
+		throw InexistentFile(nodesFile);
+
+	//No failure in opening = good to go.
+	edgesTestFile.close();
+	nodesTestFile.close();
+
 }
