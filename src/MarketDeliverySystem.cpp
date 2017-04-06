@@ -49,7 +49,7 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 		linestream >> node1 >> node2 >> weight;
 		graph.addEdge(edgeID++, node1, node2, weight);
 		//TODO: Lel choose another way to input random two way streets
-	//	if(edgeID % 8 == 0)
+		//if(edgeID % 8 == 0)
 			graph.addEdge(edgeID++, node2, node1, weight);
 	}
 
@@ -157,10 +157,10 @@ void MarketDeliverySystem::graphInfoToGV() {
 			// \/ Shit. Text is too small
 			//gv->setEdgeWeight(adjEdges[j].getID(), adjEdges[j].getWeight());
 
-			stringstream idEdge;
-			idEdge << adjEdges[j].getID();
+			//stringstream idEdge;
+			//idEdge << adjEdges[j].getID();
 
-			gv->setEdgeLabel(adjEdges[j].getID(), idEdge.str());
+		//	gv->setEdgeLabel(adjEdges[j].getID(), idEdge.str());
 		}
 	}
 
