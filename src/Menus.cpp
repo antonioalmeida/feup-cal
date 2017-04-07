@@ -58,7 +58,6 @@ unsigned short int networkSettingsMenu() {
 	cout << TAB_BIG << "---Network Settings Main Menu---" << endl;
 	cout << TAB_BIG << "----------------------" << endl;
 	cout << TAB << "1 - Alter truck" << endl;
-	//TODO: ADD MORE CUSTOMIZATION OPTIONS?
 	cout << TAB << "0 - Return to Main Menu" << endl << endl;
 	cout << TAB << "Enter your option: ";
 	option = readOp(0, 1);
@@ -113,15 +112,59 @@ void distributionOptions(MarketDeliverySystem & smn) {
 	while ((option = distributionMenu())) {
 		switch (option) {
 		case 1:
+			singleSupermarketDistributionOptions(smn);
+			break;
+		case 2:
+			smn.deliveryFromEverySupermarket();
+			break;
+		}
+		pressToContinue();
+	}
+}
+
+/******************************************
+ * Single Supermarket Distribution Menu
+ ******************************************/
+
+unsigned short int singleSupermarketDistributionMenu() {
+	unsigned short int option;
+
+	clearScreen();
+	cout << endl;
+	cout << TAB_BIG << "----------------------" << endl;
+	cout << TAB_BIG << "---Distribution Main Menu---" << endl;
+	cout << TAB_BIG << "----------------------" << endl;
+	cout << endl;
+	cout << TAB << "1 - Maximize number of clients covered per truck" << endl;
+	cout << TAB << "2 - Minimize average distance per truck" << endl;
+	cout << TAB << "0 - Return to previous menu" << endl << endl;
+	cout << TAB << "Enter your option: ";
+	option = readOp(0, 2);
+
+	return option;
+}
+
+
+void singleSupermarketDistributionOptions(MarketDeliverySystem & smn) {
+	unsigned int option;
+
+	while ((option = singleSupermarketDistributionMenu())) {
+		switch (option) {
+		case 1:
 			try{
-				smn.deliveryFromSingleSupermarket();
+				smn.deliveryFromSingleSupermarket(0);
 			}
 			catch(InexistentSupermarket &s){
 				cout << "ERROR: No supermarket identified by ID " << s.getID() << "!" << endl;
 			}
 			break;
 		case 2:
-			smn.deliveryFromEverySupermarket();
+			try{
+				smn.deliveryFromSingleSupermarket(1);
+			}
+			catch(InexistentSupermarket &s){
+				cout << "ERROR: No supermarket identified by ID " << s.getID() << "!" << endl;
+			}
 			break;
 		}
 		pressToContinue();

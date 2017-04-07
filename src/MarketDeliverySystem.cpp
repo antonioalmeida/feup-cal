@@ -478,7 +478,7 @@ void MarketDeliverySystem::printClientsInformation() {
 	}
 }
 
-void MarketDeliverySystem::deliveryFromSingleSupermarket() {
+void MarketDeliverySystem::deliveryFromSingleSupermarket(int criteria) {
 	unsigned int supermarketID;
 	cout << "Insert the supermarket to do the delivery from: ";
 	cin >> supermarketID;
@@ -496,7 +496,12 @@ void MarketDeliverySystem::deliveryFromSingleSupermarket() {
 
 
 	resetDelivered();
-	vector<vector <unsigned int> > result = singleMarketMaximizeClients(supermarketID);
+	vector<vector <unsigned int> > result;
+	if(criteria == 0)
+		result = singleMarketMaximizeClients(supermarketID);
+	else
+		result = singleMarketMinimizeDistance(supermarketID);
+
 	algorithm=result;
 	/*
 	for(int i = 0; i < result.size(); i++) {

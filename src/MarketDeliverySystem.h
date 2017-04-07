@@ -170,12 +170,12 @@ public:
 
 	//! High level method with input verification to run a single market solution
 	/*!
+	 \param criteria criteria to do distribution: 0 to maximize clients/truck, 1 to minimize avg_distance/truck
 	 */
-	void deliveryFromSingleSupermarket();
+	void deliveryFromSingleSupermarket(int criteria);
 
 	//! High level method with input verification to run the multiple markets solution
 	/*!
 	 */
 	void deliveryFromEverySupermarket();
 };
-
