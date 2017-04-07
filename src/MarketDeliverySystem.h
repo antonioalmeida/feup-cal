@@ -56,8 +56,10 @@ public:
 
 	int getClosestHouse(int id, int supermarket);
 	int getClosestHouseFromSameMarket(int id);
-	vector<unsigned int> truckPath(int originId);
-	vector<vector<unsigned int> > singleMarketTruckPaths(int originId);
+	vector<unsigned int> truckPathMaximizeClients(int originId);
+	vector<unsigned int> truckPathMinimizeDistance(int originId);
+	vector<vector<unsigned int> > singleMarketMaximizeClients(int originId);
+	vector<vector<unsigned int> > singleMarketMinimizeDistance(int originId);
 	void resetVisited();
 	int getUnvisitedHouse();
 

@@ -233,7 +233,7 @@ void MarketDeliverySystem::highlightPath(vector<unsigned int> path, string color
 }
 
 
-int MarketDeliverySystem::getClosestHouse(int id, int supermarket) {
+int MarketDeliverySystem::getClosestHouse(int id, int supermarket = -1) {
 
 	double lowestWeight = INT_INFINITY;
 	int resultId = -1;
@@ -247,10 +247,12 @@ int MarketDeliverySystem::getClosestHouse(int id, int supermarket) {
 		if(currentVisited)
 			continue;
 
-		double currentWeightToMarket = graph.nodeDistance(supermarket, currentId);
-		//cout << "Current ID : " << currentId << " distance : " << currentWeight << " visited : " << currentVisited << endl;
-		if(currentWeightToMarket < currentWeight)
-			continue;
+		if(supermarket >= 0) {
+			double currentWeightToMarket = graph.nodeDistance(supermarket, currentId);
+			//cout << "Current ID : " << currentId << " distance : " << currentWeight << " visited : " << currentVisited << endl;
+			if(currentWeightToMarket < currentWeight)
+				continue;
+		}
 
 		if(currentWeight < lowestWeight && currentWeight != 0) {
 			resultId = currentId;
@@ -297,7 +299,35 @@ int MarketDeliverySystem::getClosestHouseFromSameMarket(int id) {
 	return resultId;
 }
 
-vector<unsigned int> MarketDeliverySystem::truckPath(int originId) {
+vector<unsigned int> MarketDeliverySystem::truckPathMaximizeClients(int originId) {
+	int currentId = originId;
+
+	vector<unsigned int> path;
+	path.push_back(currentId);
+
+	for(int i = 0; i < TRUCK_CAPACITY; i++) {
+
+		int nextId = getClosestHouse(currentId);
+		cout << "[" << currentId << "][" << nextId << "] DISTANCE : " << graph.nodeDistance(currentId, nextId) << endl;
+		if(nextId == -1) //No edge to connect the house to
+			break;
+
+		vector<unsigned int> currentPath = graph.getfloydWarshallPath(currentId, nextId);
+
+		graph.getVertex(currentId)->setDelivered(true);
+		vector<unsigned int>::iterator it = currentPath.begin(); it++;
+		path.insert(path.end(), it, currentPath.end());
+
+		currentId = nextId;
+	}
+
+	graph.getVertex(currentId)->setDelivered(true);
+
+	return path;
+}
+
+
+vector<unsigned int> MarketDeliverySystem::truckPathMinimizeDistance(int originId) {
 	int currentId = originId;
 
 	vector<unsigned int> path;
@@ -324,7 +354,7 @@ vector<unsigned int> MarketDeliverySystem::truckPath(int originId) {
 	return path;
 }
 
-vector<vector<unsigned int> > MarketDeliverySystem::singleMarketTruckPaths(int originId) {
+vector<vector<unsigned int> > MarketDeliverySystem::singleMarketMaximizeClients(int originId) {
 
 	vector<vector<unsigned int> > pathsMatrix;
 
@@ -334,7 +364,26 @@ vector<vector<unsigned int> > MarketDeliverySystem::singleMarketTruckPaths(int o
 	int index = 0;
 	do {
 		cout << "Truck #" << index++ << endl;
-		currentPath = truckPath(0);
+		currentPath = truckPathMaximizeClients(0);
+		cout << endl << endl;
+		pathsMatrix.push_back(currentPath);
+
+	} while(currentPath.size() > 1);
+
+	return pathsMatrix;
+}
+
+vector<vector<unsigned int> > MarketDeliverySystem::singleMarketMinimizeDistance(int originId) {
+
+	vector<vector<unsigned int> > pathsMatrix;
+
+	int currentId = originId;
+
+	vector<unsigned int> currentPath;
+	int index = 0;
+	do {
+		cout << "Truck #" << index++ << endl;
+		currentPath = truckPathMinimizeDistance(0);
 		cout << endl << endl;
 		pathsMatrix.push_back(currentPath);
 
@@ -447,7 +496,7 @@ void MarketDeliverySystem::deliveryFromSingleSupermarket() {
 
 
 	resetVisited();
-	vector<vector <unsigned int> > result = singleMarketTruckPaths(supermarketID);
+	vector<vector <unsigned int> > result = singleMarketMaximizeClients(supermarketID);
 	algorithm=result;
 	/*
 	for(int i = 0; i < result.size(); i++) {
