@@ -35,8 +35,14 @@ void deleteWhitespace(std::string &s);
  */
 void pressToContinue();
 
+//! Asks for input files so information can be read. Throws inexistentFile exception if any of given files does not exist
+/*!
+\param nodesFile name of file where nodes will be read from
+\param edgesFile name of file where edges will be read from
+ */
 void start(std::string &nodesFile, std::string &edgesFile);
 
+/*! Exception class inexistentFile, used when trying to open files that do not exist*/
 class InexistentFile {
 protected:
 	std::string filename;
@@ -49,6 +55,7 @@ public:
 	}
 };
 
+/*! Exception class InexistentSupermarket, used when choose a supermarket by ID  that do not exist*/
 class InexistentSupermarket {
 protected:
 	unsigned supermarketID;

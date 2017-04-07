@@ -44,7 +44,7 @@ private:
 public:
 	//! Default constructor (does nothing)
 	/*!
-	*/
+	 */
 	MarketDeliverySystem();
 
 	//! Class constructor that reads and saves information read from files
@@ -56,14 +56,14 @@ public:
 
 	//! Default desconstructor
 	/*!
-	*/
+	 */
 	virtual ~MarketDeliverySystem() {if(gv != NULL) delete gv;};
 
 	//! Sets the trucks' capacity to newCapacity
 	/*!
 	\param newCapacity int that holds the trucks' new capacity
 	\sa TRUCK_CAPACITY
-	*/
+	 */
 	void setTruckCapacity(int newCapacity);
 
 	void redrawWindow();

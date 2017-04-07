@@ -18,6 +18,11 @@ using namespace std;
 template <class T> class Edge;
 template <class T> class Graph;
 
+/*
+ * ================================================================================================
+ * Class Vertex
+ * ================================================================================================
+ */
 template <class T>
 class Vertex {
 private:
@@ -108,6 +113,10 @@ void Vertex<T>::setDelivered(bool val) {
 	infoV.setDelivered(val);
 }
 
+/* ================================================================================================
+ * Class Edge
+ * ================================================================================================
+ */
 template <class T>
 class Edge {
 	int ID;
@@ -129,6 +138,10 @@ Edge<T>::Edge(Vertex<T> *d, double w): dest(d), weight(w), ID(-1){}
 template <class T>
 Edge<T>::Edge(int ID, Vertex<T> *d, double w): ID(ID), dest(d), weight(w){}
 
+/* ================================================================================================
+ * Class Graph
+ * ================================================================================================
+ */
 template <class T>
 class Graph {
 	vector<Vertex<T> *> vertexSet;
@@ -162,6 +175,7 @@ public:
 	//exercicio 6
 	void bellmanFordShortestPath(const T &s);
 	void dijkstraShortestPath(const T &s);
+
 	void floydWarshallShortestPath();
 	double edgeCost(int vOrigIndex, int vDestIndex);
 	vector<T> getfloydWarshallPath(const T &origin, const T &dest);
@@ -519,6 +533,14 @@ void Graph<T>::bellmanFordShortestPath(const T &s) {
 	}
 }
 
+
+
+
+/**
+ * Finding shortest paths in a weighted graph with positive or negative edge weights (but with no negative cycles)
+ *
+ */
+
 template<class T>
 void Graph<T>::floydWarshallShortestPath() {
 
@@ -552,6 +574,13 @@ void Graph<T>::floydWarshallShortestPath() {
 				}
 			}
 }
+
+/**
+ * Reconstruct the paths with simple modifications to the algorithm, and return their path.
+ *
+ * @param T &origin Contains of node 1.
+ * @param T &dest Contains of node 2.
+ */
 
 template<class T>
 vector<T> Graph<T>::getfloydWarshallPath(const T &origin, const T &dest){
@@ -594,6 +623,13 @@ vector<T> Graph<T>::getfloydWarshallPath(const T &origin, const T &dest){
 	return res;
 }
 
+/**
+ * Auxiliar function to calculate path's for the algorithm floyd wharshall.
+ *
+ * @param int index1 Index of node 1.
+ * @param int index2 Index of node 2.
+ * @param vector<T> res vector with path's.
+ */
 template<class T>
 void Graph<T>::getfloydWarshallPathAux(int index1, int index2, vector<T> & res)
 {
@@ -607,6 +643,12 @@ void Graph<T>::getfloydWarshallPathAux(int index1, int index2, vector<T> & res)
 	}
 }
 
+/**
+ * Calculates an edge weight according to the distance that separates its nodes.
+ *
+ * @param int vOrigIndex Index of node 1.
+ * @param int vDestIndex Index of node 2.
+ */
 template<class T>
 double Graph<T>::edgeCost(int vOrigIndex, int vDestIndex)
 {
@@ -622,6 +664,12 @@ double Graph<T>::edgeCost(int vOrigIndex, int vDestIndex)
 	return INT_INFINITY;
 }
 
+/**
+ * Calculates an node distance according to the distance that separates its nodes.
+ *
+ * @param int vOrigIndex Index of node 1.
+ * @param int vDestIndex Index of node 2.
+ */
 template<class T>
 double Graph<T>::nodeDistance(int vOrigIndex, int vDestIndex) {
 
