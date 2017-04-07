@@ -392,12 +392,12 @@ vector<vector<unsigned int> > MarketDeliverySystem::singleMarketMinimizeDistance
 	return pathsMatrix;
 }
 
-void MarketDeliverySystem::resetVisited() {
+void MarketDeliverySystem::resetDelivered() {
 	for(int i = 0; i < graph.getNumVertex(); i++)
 		graph.getVertexSet().at(i)->setDelivered(false);
 }
 
-int MarketDeliverySystem::getUnvisitedHouse() {
+int MarketDeliverySystem::getUndelivered() {
 	for(unsigned i = 0; i < clients.size(); i++) {
 		if(!graph.getVertex(clients[i])->getInfoV().getDelivered())
 			return clients[i];
@@ -495,14 +495,14 @@ void MarketDeliverySystem::deliveryFromSingleSupermarket() {
 		throw InexistentSupermarket(supermarketID);
 
 
-	resetVisited();
+	resetDelivered();
 	vector<vector <unsigned int> > result = singleMarketMaximizeClients(supermarketID);
 	algorithm=result;
 	/*
 	for(int i = 0; i < result.size(); i++) {
 		stringstream ss2;
 		ss2.str("");
-		for(int j = 0; j < result[i].size(); j++) {
+		for(int j = 0; j <originId result[i].size(); j++) {
 			ss2 << result[i][j] << " ";
 		}
 
@@ -513,7 +513,7 @@ void MarketDeliverySystem::deliveryFromSingleSupermarket() {
 }
 
 void MarketDeliverySystem::deliveryFromEverySupermarket() {
-	resetVisited();
+	resetDelivered();
 	attributeMarkets();
 	vector<vector <unsigned int> > result = multipleMarketsAllPaths();
 	algorithm = result;
