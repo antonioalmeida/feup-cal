@@ -54,7 +54,7 @@ public:
 	void fillColorMap();
 	void graphInfoToGV();
 
-	int getClosestHouse(int id);
+	int getClosestHouse(int id, int supermarket);
 	int getClosestHouseFromSameMarket(int id);
 	vector<unsigned int> truckPath(int originId);
 	vector<vector<unsigned int> > singleMarketTruckPaths(int originId);

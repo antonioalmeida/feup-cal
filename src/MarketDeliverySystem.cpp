@@ -49,7 +49,7 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 		linestream >> node1 >> node2 >> weight;
 		graph.addEdge(edgeID++, node1, node2, weight);
 		//TODO: Lel choose another way to input random two way streets
-		//if(edgeID % 8 == 0)
+		if((edgeID + 1) % 6 == 0)
 			graph.addEdge(edgeID++, node2, node1, weight);
 	}
 
@@ -94,6 +94,23 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 
 	cout << ss4.str() << endl;
 	 */
+
+	//Testing truckPathMultipleMarkets
+	/*
+	stringstream ss4;
+	vector<vector<unsigned int> > testPath4 = singleMarketTruckPaths(0);
+	ss4.str("");
+	for(unsigned int i = 0; i < testPath4.size(); i++) {
+		cout << "Path " << i << endl << endl;
+		for(unsigned int j = 0; j < testPath4[i].size(); j++) {
+			ss4 << testPath4[i][j] << " ";
+			if(j != (testPath4[i].size() -1))
+				cout << "[" << testPath4[i][j] << "][" << testPath4[i][j+1] << "], distance : " << graph.nodeDistance(testPath4[i][j],testPath4[i][j+1]) << endl;
+		}
+		cout << ss4.str() << endl << endl;
+		ss4.str("");
+	}
+	*/
 }
 
 void MarketDeliverySystem::fillColorMap(){
@@ -216,20 +233,23 @@ void MarketDeliverySystem::highlightPath(vector<unsigned int> path, string color
 }
 
 
-int MarketDeliverySystem::getClosestHouse(int id) {
+int MarketDeliverySystem::getClosestHouse(int id, int supermarket) {
 
 	double lowestWeight = INT_INFINITY;
 	int resultId = -1;
-	//cout << "Source id = " << id << endl;
 
 	for(unsigned i = 0; i < clients.size(); i++) {
 		unsigned int currentId = clients[i];
 		double currentWeight = graph.nodeDistance(id, currentId);
 
 		bool currentVisited = graph.getVertex(currentId)->getInfoV().getDelivered();
-		//cout << "Current ID : " << currentId << " cost : " << currentWeight << " visited : " << currentVisited << endl;
 
 		if(currentVisited)
+			continue;
+
+		double currentWeightToMarket = graph.nodeDistance(supermarket, currentId);
+		//cout << "Current ID : " << currentId << " distance : " << currentWeight << " visited : " << currentVisited << endl;
+		if(currentWeightToMarket < currentWeight)
 			continue;
 
 		if(currentWeight < lowestWeight && currentWeight != 0) {
@@ -285,8 +305,8 @@ vector<unsigned int> MarketDeliverySystem::truckPath(int originId) {
 
 	for(int i = 0; i < TRUCK_CAPACITY; i++) {
 
-		int nextId = getClosestHouse(currentId);
-		cout << "Current id : " << currentId << " next id : " << nextId << endl;
+		int nextId = getClosestHouse(currentId, originId);
+		cout << "[" << currentId << "][" << nextId << "] DISTANCE : " << graph.nodeDistance(currentId, nextId) << endl;
 		if(nextId == -1) //No edge to connect the house to
 			break;
 
@@ -310,24 +330,15 @@ vector<vector<unsigned int> > MarketDeliverySystem::singleMarketTruckPaths(int o
 
 	int currentId = originId;
 
-	while(true) {
-		cout << "0" << endl;
-		vector<unsigned int> currentPath = truckPath(currentId);
-		cout << "1" << endl;
+	vector<unsigned int> currentPath;
+	int index = 0;
+	do {
+		cout << "Truck #" << index++ << endl;
+		currentPath = truckPath(0);
+		cout << endl << endl;
 		pathsMatrix.push_back(currentPath);
-		cout << "2" << endl;
 
-		if(currentPath.size() > 0)
-			currentId = getClosestHouse(currentPath.at(currentPath.size()-1)); //Getting id for next iteration
-		else
-			currentId = getUnvisitedHouse();
-
-		if(currentId == -1)
-			break;
-
-		cout << "3" << endl;
-		cout << "Next id : " << currentId << endl;
-	}
+	} while(currentPath.size() > 1);
 
 	return pathsMatrix;
 }
