@@ -297,7 +297,7 @@ vector<vector<unsigned int> > MarketDeliverySystem::singleMarketMaximizeClients(
 	int index = 0;
 	do {
 		cout << "Truck #" << index++ << endl;
-		currentPath = truckPathMaximizeClients(0);
+		currentPath = truckPathMaximizeClients(originId);
 		cout << endl << endl;
 		pathsMatrix.push_back(currentPath);
 
@@ -316,7 +316,7 @@ vector<vector<unsigned int> > MarketDeliverySystem::singleMarketMinimizeDistance
 	int index = 0;
 	do {
 		cout << "Truck #" << index++ << endl;
-		currentPath = truckPathMinimizeDistance(0);
+		currentPath = truckPathMinimizeDistance(originId);
 		cout << endl << endl;
 		pathsMatrix.push_back(currentPath);
 
