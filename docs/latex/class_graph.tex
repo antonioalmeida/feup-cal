@@ -1,0 +1,159 @@
+\hypertarget{class_graph}{}\section{Graph$<$ T $>$ Class Template Reference}
+\label{class_graph}\index{Graph$<$ T $>$@{Graph$<$ T $>$}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_graph_a15c29753b1426a746cd71391d252eae1}{}\label{class_graph_a15c29753b1426a746cd71391d252eae1} 
+bool {\bfseries add\+Vertex} (const T \&in, const \hyperlink{class_info_vertex}{Info\+Vertex} \&extra\+In)
+\item 
+\hypertarget{class_graph_ac651082b034fd10f007df5545172c3d2}{}\label{class_graph_ac651082b034fd10f007df5545172c3d2} 
+bool {\bfseries add\+Edge} (int counter, const T \&sourc, const T \&dest, double w)
+\item 
+\hypertarget{class_graph_ac61af3aafe6277215f5a3b3cc7d58ce2}{}\label{class_graph_ac61af3aafe6277215f5a3b3cc7d58ce2} 
+bool {\bfseries add\+Edge} (const T \&sourc, const T \&dest, double w)
+\item 
+\hypertarget{class_graph_af9c903104ad69a7782979fa9caedf163}{}\label{class_graph_af9c903104ad69a7782979fa9caedf163} 
+bool {\bfseries remove\+Vertex} (const T \&in)
+\item 
+\hypertarget{class_graph_a1106092a37366486cf55576f9ec01692}{}\label{class_graph_a1106092a37366486cf55576f9ec01692} 
+bool {\bfseries remove\+Edge} (const T \&sourc, const T \&dest)
+\item 
+\hypertarget{class_graph_a911798b1a89f8c4ae90ba3eee849cff8}{}\label{class_graph_a911798b1a89f8c4ae90ba3eee849cff8} 
+vector$<$ T $>$ {\bfseries dfs} () const
+\item 
+\hypertarget{class_graph_a99d15f810591df9074cb97ba480a3ed4}{}\label{class_graph_a99d15f810591df9074cb97ba480a3ed4} 
+vector$<$ T $>$ {\bfseries dfs\+\_\+aux} () const
+\item 
+\hypertarget{class_graph_a56a5ea2c3aa7c0bd3849849be404a631}{}\label{class_graph_a56a5ea2c3aa7c0bd3849849be404a631} 
+vector$<$ T $>$ {\bfseries bfs} (\hyperlink{class_vertex}{Vertex}$<$ T $>$ $\ast$v) const
+\item 
+\hypertarget{class_graph_a675559f8cddfe43bc416023ad9f28cfa}{}\label{class_graph_a675559f8cddfe43bc416023ad9f28cfa} 
+int {\bfseries max\+New\+Children} (\hyperlink{class_vertex}{Vertex}$<$ T $>$ $\ast$v, T \&inf) const
+\item 
+\hypertarget{class_graph_a135e8f915af85904abca9eafaa4f13ce}{}\label{class_graph_a135e8f915af85904abca9eafaa4f13ce} 
+vector$<$ \hyperlink{class_vertex}{Vertex}$<$ T $>$ $\ast$$>$ {\bfseries get\+Vertex\+Set} () const
+\item 
+\hypertarget{class_graph_a0853eac15cdf0f06d63f4b8a7820ec71}{}\label{class_graph_a0853eac15cdf0f06d63f4b8a7820ec71} 
+int {\bfseries get\+Num\+Vertex} () const
+\item 
+\hypertarget{class_graph_a947115150a94f88ac9aedbcec59dd07e}{}\label{class_graph_a947115150a94f88ac9aedbcec59dd07e} 
+vector$<$ \hyperlink{class_vertex}{Vertex}$<$ T $>$ $\ast$ $>$ {\bfseries get\+Sources} () const
+\item 
+\hypertarget{class_graph_af34eb86d804272e6e3e221a9ed688c53}{}\label{class_graph_af34eb86d804272e6e3e221a9ed688c53} 
+void {\bfseries reset\+Indegrees} ()
+\item 
+\hypertarget{class_graph_ab49d07c2bd6b8b30d5ae82bc558b821a}{}\label{class_graph_ab49d07c2bd6b8b30d5ae82bc558b821a} 
+bool {\bfseries is\+D\+AG} ()
+\item 
+\hypertarget{class_graph_a2e75512c089c3916dda9cf61e1185d9d}{}\label{class_graph_a2e75512c089c3916dda9cf61e1185d9d} 
+vector$<$ T $>$ {\bfseries topological\+Order} ()
+\item 
+\hypertarget{class_graph_ae5264597aacaf4f45819e96a6d6c89aa}{}\label{class_graph_ae5264597aacaf4f45819e96a6d6c89aa} 
+void {\bfseries unweighted\+Shortest\+Path} (const T \&v)
+\item 
+\hypertarget{class_graph_aa9e40a7c4afa2c3e5d82141b7ae63864}{}\label{class_graph_aa9e40a7c4afa2c3e5d82141b7ae63864} 
+void {\bfseries shortest\+Path\+Unweighted} (const T \&s)
+\item 
+\hypertarget{class_graph_a350c6cb612ae88c862fc344ff9c39eae}{}\label{class_graph_a350c6cb612ae88c862fc344ff9c39eae} 
+\hyperlink{class_vertex}{Vertex}$<$ T $>$ $\ast$ {\bfseries get\+Vertex} (const T \&v)
+\item 
+\hypertarget{class_graph_a0cc06d704d009dcf46d2305c4ecfb12b}{}\label{class_graph_a0cc06d704d009dcf46d2305c4ecfb12b} 
+int {\bfseries get\+Index} (\hyperlink{class_vertex}{Vertex}$<$ T $>$ $\ast$v)
+\item 
+\hypertarget{class_graph_a1d6769b79beaa76f78fd9c9209833bef}{}\label{class_graph_a1d6769b79beaa76f78fd9c9209833bef} 
+void {\bfseries bellman\+Ford\+Shortest\+Path} (const T \&s)
+\item 
+\hypertarget{class_graph_a445a38cf4045797198eae2b818b602de}{}\label{class_graph_a445a38cf4045797198eae2b818b602de} 
+void {\bfseries dijkstra\+Shortest\+Path} (const T \&s)
+\item 
+void \hyperlink{class_graph_ae5161f4408bf1ead2b29d19d67fb04ee}{floyd\+Warshall\+Shortest\+Path} ()
+\item 
+double \hyperlink{class_graph_a15916acb538dbab24c24a13fd4d5d29d}{edge\+Cost} (int v\+Orig\+Index, int v\+Dest\+Index)
+\item 
+vector$<$ T $>$ \hyperlink{class_graph_ab23d1dae92a7f2b29dcb91a94336674c}{getfloyd\+Warshall\+Path} (const T \&origin, const T \&dest)
+\item 
+void \hyperlink{class_graph_aad1eda4beb8425d03ed1f3b8af397563}{getfloyd\+Warshall\+Path\+Aux} (int index1, int index2, vector$<$ T $>$ \&res)
+\item 
+double \hyperlink{class_graph_a26e70c70a7080265595758e1e0cc0ff2}{node\+Distance} (int v\+Orig\+Index, int v\+Dest\+Index)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_graph_a15916acb538dbab24c24a13fd4d5d29d}{}\label{class_graph_a15916acb538dbab24c24a13fd4d5d29d} 
+\index{Graph@{Graph}!edge\+Cost@{edge\+Cost}}
+\index{edge\+Cost@{edge\+Cost}!Graph@{Graph}}
+\subsubsection{\texorpdfstring{edge\+Cost()}{edgeCost()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+double \hyperlink{class_graph}{Graph}$<$ T $>$\+::edge\+Cost (\begin{DoxyParamCaption}\item[{int}]{v\+Orig\+Index,  }\item[{int}]{v\+Dest\+Index }\end{DoxyParamCaption})}
+
+Calculates an edge weight according to the distance that separates its nodes.
+
+
+\begin{DoxyParams}{Parameters}
+{\em int} & v\+Orig\+Index Index of node 1. \\
+\hline
+{\em int} & v\+Dest\+Index Index of node 2. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graph_ae5161f4408bf1ead2b29d19d67fb04ee}{}\label{class_graph_ae5161f4408bf1ead2b29d19d67fb04ee} 
+\index{Graph@{Graph}!floyd\+Warshall\+Shortest\+Path@{floyd\+Warshall\+Shortest\+Path}}
+\index{floyd\+Warshall\+Shortest\+Path@{floyd\+Warshall\+Shortest\+Path}!Graph@{Graph}}
+\subsubsection{\texorpdfstring{floyd\+Warshall\+Shortest\+Path()}{floydWarshallShortestPath()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+void \hyperlink{class_graph}{Graph}$<$ T $>$\+::floyd\+Warshall\+Shortest\+Path (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Finding shortest paths in a weighted graph with positive or negative edge weights (but with no negative cycles) \hypertarget{class_graph_ab23d1dae92a7f2b29dcb91a94336674c}{}\label{class_graph_ab23d1dae92a7f2b29dcb91a94336674c} 
+\index{Graph@{Graph}!getfloyd\+Warshall\+Path@{getfloyd\+Warshall\+Path}}
+\index{getfloyd\+Warshall\+Path@{getfloyd\+Warshall\+Path}!Graph@{Graph}}
+\subsubsection{\texorpdfstring{getfloyd\+Warshall\+Path()}{getfloydWarshallPath()}}
+{\footnotesize\ttfamily template$<$class T$>$ \\
+vector$<$ T $>$ \hyperlink{class_graph}{Graph}$<$ T $>$\+::getfloyd\+Warshall\+Path (\begin{DoxyParamCaption}\item[{const T \&}]{origin,  }\item[{const T \&}]{dest }\end{DoxyParamCaption})}
+
+Reconstruct the paths with simple modifications to the algorithm, and return their path.
+
+
+\begin{DoxyParams}{Parameters}
+{\em T} & \&origin Contains of node 1. \\
+\hline
+{\em T} & \&dest Contains of node 2. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graph_aad1eda4beb8425d03ed1f3b8af397563}{}\label{class_graph_aad1eda4beb8425d03ed1f3b8af397563} 
+\index{Graph@{Graph}!getfloyd\+Warshall\+Path\+Aux@{getfloyd\+Warshall\+Path\+Aux}}
+\index{getfloyd\+Warshall\+Path\+Aux@{getfloyd\+Warshall\+Path\+Aux}!Graph@{Graph}}
+\subsubsection{\texorpdfstring{getfloyd\+Warshall\+Path\+Aux()}{getfloydWarshallPathAux()}}
+{\footnotesize\ttfamily template$<$class T$>$ \\
+void \hyperlink{class_graph}{Graph}$<$ T $>$\+::getfloyd\+Warshall\+Path\+Aux (\begin{DoxyParamCaption}\item[{int}]{index1,  }\item[{int}]{index2,  }\item[{vector$<$ T $>$ \&}]{res }\end{DoxyParamCaption})}
+
+Auxiliar function to calculate path\textquotesingle{}s for the algorithm floyd wharshall.
+
+
+\begin{DoxyParams}{Parameters}
+{\em int} & index1 Index of node 1. \\
+\hline
+{\em int} & index2 Index of node 2. \\
+\hline
+{\em vector$<$\+T$>$} & res vector with path\textquotesingle{}s. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graph_a26e70c70a7080265595758e1e0cc0ff2}{}\label{class_graph_a26e70c70a7080265595758e1e0cc0ff2} 
+\index{Graph@{Graph}!node\+Distance@{node\+Distance}}
+\index{node\+Distance@{node\+Distance}!Graph@{Graph}}
+\subsubsection{\texorpdfstring{node\+Distance()}{nodeDistance()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+double \hyperlink{class_graph}{Graph}$<$ T $>$\+::node\+Distance (\begin{DoxyParamCaption}\item[{int}]{v\+Orig\+Index,  }\item[{int}]{v\+Dest\+Index }\end{DoxyParamCaption})}
+
+Calculates an node distance according to the distance that separates its nodes.
+
+
+\begin{DoxyParams}{Parameters}
+{\em int} & v\+Orig\+Index Index of node 1. \\
+\hline
+{\em int} & v\+Dest\+Index Index of node 2. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/Graph.\+h\end{DoxyCompactItemize}
