@@ -1,4 +1,4 @@
-supermarket 230 115
+supermarket 230 115 Continente
 house 275 100
 empty 340 70
 house 400 45
@@ -10,7 +10,7 @@ empty 475 185
 house 490 240
 empty 500 265
 house 510 290
-supermarket 525 410
+supermarket 525 410 Pingo Doce
 house 455 475
 house 380 475
 house 360 470
@@ -24,7 +24,7 @@ house 250 150
 house 275 210
 empty 250 230
 empty 300 205
-supermarket 335 190
+supermarket 335 190 Continente
 empty 325 165
 house 320 145
 empty 345 215
@@ -40,7 +40,7 @@ empty 385 305
 house 395 330
 empty 445 315
 empty 425 395
-supermarket 355 355
+supermarket 355 355 Jumbo
 empty 380 410
 house 400 455
 house 320 370 
@@ -61,7 +61,7 @@ house 180 300
 house 190 320
 house 160 325
 empty 110 340
-supermarket 70 360
+supermarket 70 360 Minipreco
 empty 80 255
 empty 115 240
 empty 150 220
