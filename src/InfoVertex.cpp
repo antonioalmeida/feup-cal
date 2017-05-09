@@ -4,15 +4,20 @@
 
 InfoVertex::InfoVertex(){};
 
-InfoVertex::InfoVertex(double x, double y, string type) {
+InfoVertex::InfoVertex(double x, double y, string type, string name) {
 	this->type = type;
 	this->x = x;
 	this->y = y;
 	this->delivered = false;
 	this->supermarket = INT_INFINITY;
+	this->name = name;
 }
 
 InfoVertex::~InfoVertex() {
+}
+
+string InfoVertex::getName() {
+	return name;
 }
 
 string InfoVertex::getType() {

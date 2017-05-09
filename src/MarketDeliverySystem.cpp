@@ -21,9 +21,11 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 	while (getline(nodes, line)) {
 		stringstream linestream(line);
 		string data;
+		string name;
 
 		linestream >> data >> currentX >> currentY;
-		InfoVertex info = InfoVertex(currentX, currentY, data);
+		getline(linestream, name);
+		InfoVertex info = InfoVertex(currentX, currentY, data, name);
 
 		if(info.getType() == "house")
 			clients.push_back(nodeID);
@@ -45,9 +47,11 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 		stringstream linestream(line);
 		int node1, node2;
 		double weight;
+		string name;
 
 		linestream >> node1 >> node2 >> weight;
-		graph.addEdge(edgeID++, node1, node2, weight);
+		getline(linestream, name);
+		graph.addEdge(edgeID++, node1, node2, weight, name);
 		if((edgeID + 1) % 6 == 0)
 			graph.addEdge(edgeID++, node2, node1, weight);
 	}

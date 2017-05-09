@@ -9,6 +9,7 @@ using namespace std;
  */
 class InfoVertex {
 private:
+	string name;
 	string type;
 	double x;
 	double y;
@@ -25,14 +26,21 @@ public:
 	/*!
 		 \param x coordinate in x-axis
 		 \param y coordinate in y-axis
-		 \param type type of vertex(house or supermarket or empty)
+		 \param type type of vertex (house or supermarket or empty)
+		 \param name name of the vertex (in case it's a supermarket)
 	 */
-	InfoVertex(double x, double y, string type = "");
+	InfoVertex(double x, double y, string type = "", string name = "");
 
 	//! Default desconstructor
 	/*!
 	 */
 	virtual ~InfoVertex();
+
+	//! Gets the name assigned to the vertex, if set. Otherwise, returns empty string
+	/*!
+	\return string corresponding to the name
+	*/
+	string getName();
 
 	//! Gets a type of vertex like house, supermarket or empty
 	/*!
