@@ -16,9 +16,10 @@ unsigned short int mainMenu() {
 	cout << TAB << "1 - Network map settings menu" << endl;
 	cout << TAB << "2 - Distribution options menu" << endl;
 	cout << TAB << "3 - View latest calculated paths" << endl;
+	cout << TAB << "4 - Name pattern matching" << endl;
 	cout << TAB << "0 - Exit" << endl << endl;
 	cout << TAB << "Enter your option: ";
-	option = readOp(0, 3);
+	option = readOp(0, 4);
 
 	return option;
 }
@@ -40,8 +41,11 @@ void mainOption(MarketDeliverySystem &smn) {
 			smn.closeWindow();
 			break;
 		}
-		pressToContinue();
+		case 4:
+			stringMatchingOptions(smn);
+			break;
 		}
+		pressToContinue();
 	}
 }
 
@@ -170,3 +174,58 @@ void singleSupermarketDistributionOptions(MarketDeliverySystem & smn) {
 		pressToContinue();
 	}
 }
+
+/******************************************
+ * String pattern matching Menu
+ ******************************************/
+
+unsigned short int stringMatchingMenu() {
+	unsigned short int option;
+
+	clearScreen();
+	cout << endl;
+	cout << TAB_BIG << "----------------------" << endl;
+	cout << TAB_BIG << "---String Matching Menu---" << endl;
+	cout << TAB_BIG << "----------------------" << endl;
+	cout << endl;
+	cout << TAB << "1 - Check if there is a supermarket in a given street" << endl;
+	cout << TAB << "2 - Check in which street(s) a given supermarket is located" << endl;
+	cout << TAB << "0 - Return to previous menu" << endl << endl;
+	cout << TAB << "Enter your option: ";
+	option = readOp(0, 2);
+
+	return option;
+}
+
+
+void stringMatchingOptions(MarketDeliverySystem & smn) {
+	unsigned int option;
+
+	while ((option = stringMatchingMenu())) {
+		switch (option) {
+		case 1:{
+			int second_option;
+			cout << "Choose between exact (0) or approximate (1) search: ";
+			second_option = readOp(0, 1);
+			if(second_option == 0)
+				smn.checkForSupermarketExact();
+			else
+				smn.checkForSupermarketApproximate();
+			break;
+		}
+		case 2:
+		{
+			int second_option;
+			cout << "Choose between exact (0) or approximate (1) search: ";
+			second_option = readOp(0, 1);
+			if(second_option == 0)
+				smn.checkForStreetsExact();
+			else
+				smn.checkForStreetsApproximate();
+			break;
+		}
+		}
+		pressToContinue();
+	}
+}
+

@@ -1,4 +1,5 @@
 #include "MarketDeliverySystem.h"
+#include "matcher.h"
 
 MarketDeliverySystem::MarketDeliverySystem() {
 	TRUCK_CAPACITY = 10;
@@ -445,4 +446,58 @@ void MarketDeliverySystem::deliveryFromEverySupermarket() {
 	vector<vector <unsigned int> > result = multipleMarketsAllPaths();
 	algorithm = result;
 	printClientsInformation();
+}
+
+void MarketDeliverySystem::checkForSupermarketExact(){
+	cin.ignore();
+	cout << "Insert the street name: ";
+	string name;
+	getline(cin, name);
+	vector<string> tokens = splitting(name);
+	vector<vector<int>> pi_vectors;
+	for(int i = 0; i < tokens.size(); i++) //Compute pi vectors beforehand to reduce complexity of KMP to O(T)
+		pi_vectors.push_back(computePrefix(tokens[i]));
+
+	vector<Vertex<unsigned>*> vertexSet = graph.getVertexSet();
+	bool oneFound = false;
+	for(int i = 0; i < vertexSet.size(); i++){
+		vector<Edge<unsigned>> adj = vertexSet[i]->getAdj();
+		for(int j = 0; j < adj.size(); j++){
+			string name = adj[j].getName();
+			bool onePatternNotFound = false;
+			for(int k = 0; k < tokens.size(); k++){
+				if(KMP(tokens[k], name, pi_vectors[k]) == 0){
+					onePatternNotFound = true;
+					break;
+				}
+			}
+
+			if(!onePatternNotFound){
+				oneFound = true;
+				cout << "Street matched: " << name << " | ";
+				if(vertexSet[i]->getInfoV().getType() == "supermarket" || adj[j].getDest()->getInfoV().getType() == "supermarket")
+					cout << "There is a supermarket on this street" << endl;
+				else
+					cout << "There isn't a supermarket on this street" << endl;
+			}
+		}
+	}
+
+	if(!oneFound)
+		cout << "Didn't find any exact matching results. Perhaps try approximate search" << endl;
+}
+
+
+void MarketDeliverySystem::checkForSupermarketApproximate(){
+
+}
+
+
+void MarketDeliverySystem::checkForStreetsExact(){
+
+}
+
+
+void MarketDeliverySystem::checkForStreetsApproximate(){
+
 }

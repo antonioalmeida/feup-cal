@@ -178,4 +178,24 @@ public:
 	/*!
 	 */
 	void deliveryFromEverySupermarket();
+
+	//! Performs exact string matching search on street names checking if on a given street there is a supermarket
+	/*!
+	 */
+	void checkForSupermarketExact();
+
+	//! Performs approximate string matching search on street names checking if on a given street there is a supermarket
+	/*!
+	 */
+	void checkForSupermarketApproximate();
+
+	//! Performs exact string matching search on supermarkets checking in which street(s) a given supermarket is located on
+	/*!
+	 */
+	void checkForStreetsExact();
+
+	//! Performs approximate string matching search on supermarkets checking in which street(s) a given supermarket is located on
+	/*!
+	 */
+	void checkForStreetsApproximate();
 };
