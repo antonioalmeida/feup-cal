@@ -494,7 +494,43 @@ void MarketDeliverySystem::checkForSupermarketApproximate(){
 
 
 void MarketDeliverySystem::checkForStreetsExact(){
+	cin.ignore();
+	cout << "Insert the supermarket's name: ";
+	string name;
+	getline(cin, name);
+	vector<string> tokens = splitting(name);
+	vector<vector<int>> pi_vectors;
+	vector<Vertex<unsigned>*> vertexSet = graph.getVertexSet();
+	for(int i = 0; i < tokens.size(); i++) //Compute pi vectors beforehand to reduce complexity of KMP to O(T)
+		pi_vectors.push_back(computePrefix(tokens[i]));
 
+	bool found = false;
+	for(int i = 0; i < supermarkets.size(); i++){
+		string name = vertexSet[supermarkets[i]]->getInfoV().getName();
+		bool onePatternNotFound = false;
+		for(int k = 0; k < tokens.size(); k++){
+			if(KMP(tokens[k], name, pi_vectors[k]) == 0){
+				onePatternNotFound = true;
+				break;
+			}
+		}
+
+		if(!onePatternNotFound){
+			found = true;
+			//TODO: Add edges whose destination is the supermarket (only considering edges whose source is the supermarket for now)
+			cout << "Supermarket matched: " << name << " | Located in the crossing between ";
+			vector<Edge<unsigned>> adj = vertexSet[supermarkets[i]]->getAdj();
+			for(int j = 0; j < adj.size(); j++){
+				cout << adj[j].getName();
+				if(j != adj.size() - 1 )
+					cout << ", ";
+			}
+			cout << endl;
+		}
+	}
+
+	if(!found)
+		cout << "Didn't find any exact matching results. Perhaps try approximate search" << endl;
 }
 
 
