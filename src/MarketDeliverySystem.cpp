@@ -499,7 +499,34 @@ void MarketDeliverySystem::checkForSupermarketApproximate(){
 	string name;
 	getline(cin, name);
 	vector<string> tokens = splitting(name);
-	//TODO: Complete :'(
+	vector<Vertex<unsigned>*> vertexSet = graph.getVertexSet();
+	multimap<int, pair<string, bool>> recommendations; //distance to name-hasSupermarket string,bool pair multimap (multi because same distance can appear more than once)
+
+	for(int i = 0; i < vertexSet.size(); i++){
+		vector<Edge<unsigned>> adj = vertexSet[i]->getAdj();
+		for(int j = 0; j < adj.size(); j++){
+			int total = 0;
+			bool hasSupermarket = (vertexSet[i]->getInfoV().getType() == "supermarket" || adj[j].getDest()->getInfoV().getType() == "supermarket" ? true : false);
+			string sName = adj[j].getName();
+			if(sName == "") //Means it's a bidirectional street so the other end has the name. No need to process twice
+				continue;
+			vector<string> currStreetTokens = splitting(sName);
+			for(int k = 0; k < tokens.size(); k++){
+				int minimum = INT_MAX;
+				for(int m = 0; m < currStreetTokens.size(); m++){
+					int distance = editDistance(tokens[k], currStreetTokens[m]);
+					if(distance < minimum)
+						minimum = distance;
+				}
+				total += minimum;
+			}
+
+			recommendations.insert(pair<int,pair<string,bool>>(total, pair<string,bool>(sName, hasSupermarket)));
+		}
+	}
+
+	for(multimap<int,pair<string,bool>>::iterator it = recommendations.begin(); it != recommendations.end(); it++)
+		cout << "Suggestion: " << it->second.first << "(total of " << it->first << " operations to fit every single word in the real name). This street does " << (it->second.second ? "" : "not ") << "have a supermarket" << endl;
 }
 
 
@@ -552,7 +579,7 @@ void MarketDeliverySystem::checkForStreetsApproximate(){
 	string name;
 	getline(cin, name);
 	vector<Vertex<unsigned>*> vertexSet = graph.getVertexSet();
-	multimap<int, int> recommendations; //distance to supermarket id map
+	multimap<int, int> recommendations; //distance to supermarket id map (multi because same distance can appear more than once)
 
 
 	for(int i = 0; i < supermarkets.size(); i++){
