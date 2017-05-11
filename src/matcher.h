@@ -2,6 +2,8 @@
 #include <vector>
 #include <sstream>
 
+#define MIN(x,y) ((x) < (y) ? (x) : (y))
+
 using namespace std;
 
 //TODO: Substitude by TP's solution
@@ -83,6 +85,21 @@ int KMP(string pat, string txt, vector<int> lps){
     }
 
     return counter;
+}
+
+//TODO: Substitude by TP's solution
+int editDistance(string pattern, string text){
+	const std::size_t len1 = pattern.size(), len2 = text.size();
+	std::vector<std::vector<unsigned int>> d(len1 + 1, std::vector<unsigned int>(len2 + 1));
+
+	d[0][0] = 0;
+	for(unsigned int i = 1; i <= len1; ++i) d[i][0] = i;
+	for(unsigned int i = 1; i <= len2; ++i) d[0][i] = i;
+
+	for(unsigned int i = 1; i <= len1; ++i)
+		for(unsigned int j = 1; j <= len2; ++j)
+			d[i][j] = std::min({ d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (pattern[i - 1] == text[j - 1] ? 0 : 1) });
+	return d[len1][len2];
 }
 
 vector<string> splitting(string original){

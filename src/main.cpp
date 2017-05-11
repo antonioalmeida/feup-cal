@@ -12,7 +12,6 @@ int main() {
 		cout << "ERROR: One of \"" << s.getFilename() << "\"'s components not found!" << endl;
 		exit(-1);
 	}
-
 	MarketDeliverySystem smn(nodesFile, edgesFile);
 	mainOption(smn);
 

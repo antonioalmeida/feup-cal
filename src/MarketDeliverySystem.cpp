@@ -1,3 +1,4 @@
+#include <map>
 #include "MarketDeliverySystem.h"
 #include "matcher.h"
 
@@ -25,6 +26,8 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 		string name;
 
 		linestream >> data >> currentX >> currentY;
+		if((char)linestream.peek() == ' ')
+			linestream.ignore();
 		getline(linestream, name);
 		InfoVertex info = InfoVertex(currentX, currentY, data, name);
 
@@ -51,6 +54,8 @@ MarketDeliverySystem::MarketDeliverySystem(string &nodesFile, string &edgesFile)
 		string name;
 
 		linestream >> node1 >> node2 >> weight;
+		if((char)linestream.peek() == ' ')
+			linestream.ignore();
 		getline(linestream, name);
 		graph.addEdge(edgeID++, node1, node2, weight, name);
 		if((edgeID + 1) % 6 == 0)
@@ -489,7 +494,12 @@ void MarketDeliverySystem::checkForSupermarketExact(){
 
 
 void MarketDeliverySystem::checkForSupermarketApproximate(){
-
+	cin.ignore();
+	cout << "Insert the street name: ";
+	string name;
+	getline(cin, name);
+	vector<string> tokens = splitting(name);
+	//TODO: Complete :'(
 }
 
 
@@ -506,10 +516,10 @@ void MarketDeliverySystem::checkForStreetsExact(){
 
 	bool found = false;
 	for(int i = 0; i < supermarkets.size(); i++){
-		string name = vertexSet[supermarkets[i]]->getInfoV().getName();
+		string sName = vertexSet[supermarkets[i]]->getInfoV().getName();
 		bool onePatternNotFound = false;
 		for(int k = 0; k < tokens.size(); k++){
-			if(KMP(tokens[k], name, pi_vectors[k]) == 0){
+			if(KMP(tokens[k], sName, pi_vectors[k]) == 0){
 				onePatternNotFound = true;
 				break;
 			}
@@ -517,8 +527,8 @@ void MarketDeliverySystem::checkForStreetsExact(){
 
 		if(!onePatternNotFound){
 			found = true;
-			//TODO: Add edges whose destination is the supermarket (only considering edges whose source is the supermarket for now)
-			cout << "Supermarket matched: " << name << " | Located in the crossing between ";
+			//TODO: Add edges whose destination is the supermarket? (only considering edges whose source is the supermarket for now)
+			cout << "Supermarket matched: " << name << " | Located in source end of the crossing between ";
 			vector<Edge<unsigned>> adj = vertexSet[supermarkets[i]]->getAdj();
 			for(int j = 0; j < adj.size(); j++){
 				cout << adj[j].getName();
@@ -534,6 +544,33 @@ void MarketDeliverySystem::checkForStreetsExact(){
 }
 
 
-void MarketDeliverySystem::checkForStreetsApproximate(){
+#define AVERAGE_NR_CHANGES 6
 
+void MarketDeliverySystem::checkForStreetsApproximate(){
+	cin.ignore();
+	cout << "Insert the supermarket's name: ";
+	string name;
+	getline(cin, name);
+	vector<Vertex<unsigned>*> vertexSet = graph.getVertexSet();
+	multimap<int, int> recommendations; //distance to supermarket id map
+
+
+	for(int i = 0; i < supermarkets.size(); i++){
+		string sName = vertexSet[supermarkets[i]]->getInfoV().getName();
+		int distance = editDistance(sName, name);
+		recommendations.insert(pair<int,int>(distance, supermarkets[i]));
+	}
+
+	for(map<int,int>::iterator it = recommendations.begin(); it != recommendations.end() && it->first < AVERAGE_NR_CHANGES; it++){
+		Vertex<unsigned>* currentSupermarket = vertexSet[it->second];
+		//TODO: Add edges whose destination is the supermarket? (only considering edges whose source is the supermarket for now)
+		cout << "Supermarket suggestion: " << currentSupermarket->getInfoV().getName() << " ("<< it->first << " operations to convert to real name) | Located in source end of the crossing between ";
+		vector<Edge<unsigned>> adj = currentSupermarket->getAdj();
+		for(int j = 0; j < adj.size(); j++){
+			cout << adj[j].getName();
+			if(j != adj.size() - 1 )
+				cout << ", ";
+		}
+		cout << endl;
+	}
 }
