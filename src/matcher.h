@@ -6,100 +6,83 @@
 
 using namespace std;
 
-//TODO: Substitude by TP's solution
-vector<int> computePrefix(string pat){
-    // length of the previous longest prefix suffix
-    int len = 0;
-    int M = pat.size();
-    vector<int> lps(M);
-    lps[0] = 0; // lps[0] is always 0
-    int i = 1;
-    while (i < M){
-        if (pat[i] == pat[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        }
-        else{
-            if (len != 0)
-                len = lps[len-1];
-            else{
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-
-    return lps;
+vector<int> computePrefix(string pattern){
+	int m=pattern.length();
+	vector<int> prefix(m);
+	prefix[0]=-1;
+	int k=-1;
+	for (int q=1; q<m; q++) {
+		while (k>-1 && pattern[k+1]!=pattern[q])
+			k = prefix[k];
+		if (pattern[k+1]==pattern[q]) k=k+1;
+		prefix[q]=k;
+	}
+	return prefix;
 }
 
-//TODO: Substitude by TP's solution
-int KMP(string pat, string txt){
-    int M = pat.size();
-    int N = txt.size();
-    int counter = 0;
-    vector<int> lps = computePrefix(pat);
-    int i = 0;  // index for txt[]
-    int j  = 0;  // index for pat[]
-    while (i < N) {
-        if (pat[j] == txt[i]){
-            j++;
-            i++;
-        }
-        if (j == M){
-            counter++;
-            j = lps[j-1];
-        }
-        else if (i < N && pat[j] != txt[i]){
-            if (j != 0)
-                j = lps[j-1];
-            else
-                i = i+1;
-        }
-    }
+int KMP(string pattern, string text){
+	int num=0;
+	int m=pattern.length();
+	vector<int> prefix = computePrefix(pattern);
 
-    return counter;
+	int n=text.length();
+
+	int q=-1;
+	for (int i=0; i<n; i++) {
+		while (q>-1 && pattern[q+1]!=text[i])
+			q=prefix[q];
+		if (pattern[q+1]==text[i])
+			q++;
+		if (q==m-1) {
+			num++;
+			q=prefix[q];
+		}
+	}
+	return num;
 }
 
-int KMP(string pat, string txt, vector<int> lps){
-    int M = pat.size();
-    int N = txt.size();
-    int counter = 0;
-    int i = 0;  // index for txt[]
-    int j  = 0;  // index for pat[]
-    while (i < N) {
-        if (pat[j] == txt[i]){
-            j++;
-            i++;
-        }
-        if (j == M){
-            counter++;
-            j = lps[j-1];
-        }
-        else if (i < N && pat[j] != txt[i]){
-            if (j != 0)
-                j = lps[j-1];
-            else
-                i = i+1;
-        }
-    }
+int KMP(string pattern, string text, const vector<int> &prefix){
+	int num=0;
+	int m=pattern.length();
 
-    return counter;
+	int n=text.length();
+
+	int q=-1;
+	for (int i=0; i<n; i++) {
+		while (q>-1 && pattern[q+1]!=text[i])
+			q=prefix[q];
+		if (pattern[q+1]==text[i])
+			q++;
+		if (q==m-1) {
+			num++;
+			q=prefix[q];
+		}
+	}
+	return num;
 }
 
-//TODO: Substitude by TP's solution
 int editDistance(string pattern, string text){
-	const std::size_t len1 = pattern.size(), len2 = text.size();
-	std::vector<std::vector<unsigned int>> d(len1 + 1, std::vector<unsigned int>(len2 + 1));
-
-	d[0][0] = 0;
-	for(unsigned int i = 1; i <= len1; ++i) d[i][0] = i;
-	for(unsigned int i = 1; i <= len2; ++i) d[0][i] = i;
-
-	for(unsigned int i = 1; i <= len1; ++i)
-		for(unsigned int j = 1; j <= len2; ++j)
-			d[i][j] = std::min({ d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (pattern[i - 1] == text[j - 1] ? 0 : 1) });
-	return d[len1][len2];
+	int n=text.length();
+	vector<int> d(n+1);
+	int old,neww;
+	for (int j=0; j<=n; j++)
+		d[j]=j;
+	int m=pattern.length();
+	for (int i=1; i<=m; i++) {
+		old = d[0];
+		d[0]=i;
+		for (int j=1; j<=n; j++) {
+			if (pattern[i-1]==text[j-1]) neww = old;
+			else {
+				neww = min(old,d[j]);
+				neww = min(neww,d[j-1]);
+				neww = neww +1;
+			}
+			old = d[j];
+			d[j] = neww;
+		}
+	}
+	return d[n];
 }
 
 vector<string> splitting(string original){

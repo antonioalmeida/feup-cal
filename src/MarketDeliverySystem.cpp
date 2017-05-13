@@ -554,7 +554,6 @@ void MarketDeliverySystem::checkForStreetsExact(){
 
 		if(!onePatternNotFound){
 			found = true;
-			//TODO: Add edges whose destination is the supermarket? (only considering edges whose source is the supermarket for now)
 			cout << "Supermarket matched: " << name << " | Located in source end of the crossing between ";
 			vector<Edge<unsigned>> adj = vertexSet[supermarkets[i]]->getAdj();
 			for(int j = 0; j < adj.size(); j++){
@@ -590,7 +589,6 @@ void MarketDeliverySystem::checkForStreetsApproximate(){
 
 	for(map<int,int>::iterator it = recommendations.begin(); it != recommendations.end() && it->first < AVERAGE_NR_CHANGES; it++){
 		Vertex<unsigned>* currentSupermarket = vertexSet[it->second];
-		//TODO: Add edges whose destination is the supermarket? (only considering edges whose source is the supermarket for now)
 		cout << "Supermarket suggestion: " << currentSupermarket->getInfoV().getName() << " ("<< it->first << " operations to convert to real name) | Located in source end of the crossing between ";
 		vector<Edge<unsigned>> adj = currentSupermarket->getAdj();
 		for(int j = 0; j < adj.size(); j++){
