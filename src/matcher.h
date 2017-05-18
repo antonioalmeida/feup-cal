@@ -93,3 +93,16 @@ vector<string> splitting(string original){
 		result.push_back(token);
 	return result;
 }
+
+bool notGenericName(string text){
+	return text != "Rua" &&
+		text != "rua" &&
+		text != "Avenida" &&
+		text != "avenida" &&
+		text != "Praceta" &&
+		text != "praceta" &&
+		text != "Travessa" &&
+		text != "travessa" &&
+		text != "Rodivia" &&
+		text != "rodovia";
+}

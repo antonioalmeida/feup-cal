@@ -471,6 +471,7 @@ void MarketDeliverySystem::checkForSupermarketExact(){
 			string name = adj[j].getName();
 			bool onePatternNotFound = false;
 			for(int k = 0; k < tokens.size(); k++){
+				if(!notGenericName(tokens[k])) continue;
 				if(KMP(tokens[k], name, pi_vectors[k]) == 0){
 					onePatternNotFound = true;
 					break;
@@ -501,7 +502,8 @@ void MarketDeliverySystem::checkForSupermarketApproximate(){
 	vector<string> tokens = splitting(name);
 	vector<Vertex<unsigned>*> vertexSet = graph.getVertexSet();
 	multimap<int, pair<string, bool>> recommendations; //distance to name-hasSupermarket string,bool pair multimap (multi because same distance can appear more than once)
-
+	int AVERAGE_NR_CHANGES = 0;
+	bool first_iter = true;
 	for(int i = 0; i < vertexSet.size(); i++){
 		vector<Edge<unsigned>> adj = vertexSet[i]->getAdj();
 		for(int j = 0; j < adj.size(); j++){
@@ -512,8 +514,12 @@ void MarketDeliverySystem::checkForSupermarketApproximate(){
 				continue;
 			vector<string> currStreetTokens = splitting(sName);
 			for(int k = 0; k < tokens.size(); k++){
+				if(!notGenericName(tokens[k])) continue;
+				if(first_iter)
+					AVERAGE_NR_CHANGES += (int)(0.7*tokens[k].size()+0.5);
 				int minimum = INT_MAX;
 				for(int m = 0; m < currStreetTokens.size(); m++){
+					if(!notGenericName(currStreetTokens[m])) continue;
 					int distance = editDistance(tokens[k], currStreetTokens[m]);
 					if(distance < minimum)
 						minimum = distance;
@@ -521,11 +527,16 @@ void MarketDeliverySystem::checkForSupermarketApproximate(){
 				total += minimum;
 			}
 
+			if(first_iter)
+				first_iter = false;
+
 			recommendations.insert(pair<int,pair<string,bool>>(total, pair<string,bool>(sName, hasSupermarket)));
 		}
 	}
 
-	for(multimap<int,pair<string,bool>>::iterator it = recommendations.begin(); it != recommendations.end(); it++)
+	AVERAGE_NR_CHANGES *= tokens.size();
+
+	for(multimap<int,pair<string,bool>>::iterator it = recommendations.begin(); it != recommendations.end() && it->first < AVERAGE_NR_CHANGES; it++)
 		cout << "Suggestion: " << it->second.first << "(total of " << it->first << " operations to fit every single word in the real name). This street does " << (it->second.second ? "" : "not ") << "have a supermarket" << endl;
 }
 
@@ -546,6 +557,7 @@ void MarketDeliverySystem::checkForStreetsExact(){
 		string sName = vertexSet[supermarkets[i]]->getInfoV().getName();
 		bool onePatternNotFound = false;
 		for(int k = 0; k < tokens.size(); k++){
+			if(!notGenericName(tokens[k])) continue;
 			if(KMP(tokens[k], sName, pi_vectors[k]) == 0){
 				onePatternNotFound = true;
 				break;
@@ -569,14 +581,12 @@ void MarketDeliverySystem::checkForStreetsExact(){
 		cout << "Didn't find any exact matching results. Perhaps try approximate search" << endl;
 }
 
-
-#define AVERAGE_NR_CHANGES 6
-
 void MarketDeliverySystem::checkForStreetsApproximate(){
 	cin.ignore();
 	cout << "Insert the supermarket's name: ";
 	string name;
 	getline(cin, name);
+	int AVERAGE_NR_CHANGES = (int)(0.7*name.size()+0.5);
 	vector<Vertex<unsigned>*> vertexSet = graph.getVertexSet();
 	multimap<int, int> recommendations; //distance to supermarket id map (multi because same distance can appear more than once)
 
